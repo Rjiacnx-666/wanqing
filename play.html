@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>重生之我在晚清求生：點滿 SWOT 技能樹的逆襲之路</title>
+<meta name="description" content="國中社會 × 生涯規劃教學遊戲。重生回到晚清，抽一種身分、闖過 8 集歷史變局。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="重生之我在晚清求生：點滿 SWOT 技能樹的逆襲之路">
+<meta property="og:description" content="叮！你重生到了晚清。抽一種身分、闖過 8 集變局，你會走出哪一種人生？">
+<meta property="og:url" content="https://rjiacnx-666.github.io/wanqing/play.html">
+<meta property="og:image" content="https://rjiacnx-666.github.io/wanqing/assets/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#1d1a26">
+<style>
+:root{--bg:#1d1a26;--panel:#2a2536;--panel2:#332d42;--ink:#f3e9d2;--muted:#a99f8c;--red:#c8463a;--redS:#7d2a22;--gold:#e0b04a;--jade:#6fb59c;--line:#463e57}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;font-size:16px;line-height:1.75}
+.wrap{max-width:560px;margin:0 auto;padding:12px 12px 48px}
+canvas.px{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+button{font:inherit;cursor:pointer;color:inherit}
+.hidden{display:none!important}
+.small{font-size:13px;color:var(--muted)}
+.fade{animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.top{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.yr{font-size:26px;font-weight:800;color:var(--gold);letter-spacing:.04em;line-height:1}
+.info{flex:1;font-size:13px;color:var(--muted);line-height:1.4}
+.info b{color:var(--ink);font-weight:600}
+.snd{background:var(--panel);border:2px solid var(--line);border-radius:6px;padding:4px 10px;font-size:14px}
+.snd.on{border-color:var(--gold);color:var(--gold)}
+.dots{display:flex;gap:4px;margin-bottom:8px}
+.dots i{flex:1;height:6px;background:var(--panel2);border-radius:1px}
+.dots i.done{background:var(--red)}.dots i.now{background:var(--gold)}
+
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;background:var(--panel);border:2px solid var(--line);border-radius:6px;padding:6px 10px;margin-bottom:8px}
+.st{display:grid;grid-template-columns:44px 1fr 16px 22px;align-items:center;gap:6px;font-size:13px;position:relative}
+.st .cells{display:grid;grid-template-columns:repeat(10,1fr);gap:1px}
+.st .cells i{height:8px;background:#3a3348;border-radius:1px}
+.st b{text-align:right;color:var(--gold);font-size:13px}
+.st .pop{font-size:12px;font-weight:700;animation:popup 2.2s ease forwards}
+@keyframes popup{0%{opacity:0}15%{opacity:1}85%{opacity:1}100%{opacity:0}}
+
+.scene{position:relative;border:3px solid #0e0c14;outline:2px solid var(--line);border-radius:2px;overflow:hidden;background:#000}
+.scene canvas{width:100%;height:auto}
+.scene .ttl{position:absolute;left:6px;top:6px;background:rgba(14,12,20,.82);padding:2px 10px;font-weight:700;font-size:15px;border-left:3px solid var(--red)}
+.book{display:inline-block;font-size:12px;color:var(--jade);border:1px solid #3e6a5c;padding:0 8px;border-radius:3px;margin:10px 0 0}
+
+.dlg{display:flex;gap:10px;background:var(--panel);border:2px solid var(--line);border-radius:6px;padding:10px;margin-top:10px;min-height:120px;position:relative}
+.face{flex:none;width:72px}
+.face canvas{width:72px;height:90px;border:2px solid #0e0c14}
+.face .nm{font-size:12px;color:var(--muted);text-align:center;margin-top:2px;line-height:1.3}
+.face.pop canvas{animation:pop .6s steps(3)}
+@keyframes pop{0%{filter:brightness(2.2)}50%{transform:scale(1.08)}100%{filter:none;transform:none}}
+.dlg .txt{flex:1;min-height:96px}
+.dlg .txt p{margin:0 0 .6em}
+.dlg .more{position:absolute;right:10px;bottom:6px;color:var(--gold);font-size:12px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+
+.q{margin:14px 0 8px;font-weight:700;font-size:17px;padding-left:10px;border-left:4px solid var(--gold)}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;background:var(--panel2);border:2px solid var(--line);border-radius:6px;padding:11px 12px;box-shadow:0 3px 0 #0e0c14;transition:transform .08s}
+.opt:hover:not([disabled]){border-color:var(--gold)}
+.opt:active:not([disabled]){transform:translateY(2px);box-shadow:none}
+.opt .k{flex:none;width:26px;height:26px;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:700;border-radius:3px;font-size:14px}
+.opt .lab{flex:1}
+.opt .lock{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.opt[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
+.opt.chosen{opacity:1;border-color:var(--gold);background:#3d3424}
+.opt.chosen .k{background:var(--gold);color:#1d1a26}
+
+.res{margin-top:10px;background:#251f18;border:2px dashed #6b5634;border-radius:6px;padding:10px 12px}
+.res .ty{font-size:12px;color:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.chip{font-size:12.5px;padding:1px 8px;border-radius:3px;background:var(--panel2);border:1px solid var(--line)}
+.chip.up{color:#8fd6b7;border-color:#3e6a5c}.chip.down{color:#f08c80;border-color:#7d2a22}.chip.flag{color:var(--gold);border-color:#6b5634}
+.arr{color:var(--muted);font-size:13px}
+
+.card{margin-top:12px;border:3px solid #0e0c14;outline:2px solid #6b5634;background:#f1e4c6;color:#2a211a;border-radius:2px;animation:flip .5s ease}
+@keyframes flip{from{transform:rotateX(80deg);opacity:0}to{transform:none;opacity:1}}
+.card h3{margin:0;background:#3a2c1f;color:#f1e4c6;font-size:15px;padding:6px 12px;letter-spacing:.1em}
+.card .col{padding:7px 12px;border-top:1px dashed #b9a47c;font-size:14.5px}
+.card .col b{display:inline-block;width:5.4em;font-size:13.5px}
+.card .dn b{color:#a8342a}.card .up b{color:#2f6b5a}.card .ln b{color:#8a5a12}
+.card .nt{background:#e4d3ae;padding:7px 12px;font-size:13.5px;border-top:1px dashed #b9a47c}
+
+.btn{display:block;width:100%;margin-top:14px;background:var(--red);border:none;border-radius:6px;padding:12px;font-weight:700;font-size:17px;color:#fff;box-shadow:0 4px 0 var(--redS)}
+.btn:active{transform:translateY(3px);box-shadow:none}
+.btn.alt{background:var(--panel2);box-shadow:0 4px 0 #0e0c14;border:2px solid var(--line)}
+.btn[disabled]{opacity:.5}
+
+.hero{text-align:center;padding-top:8px}
+.hero .kick{font-size:13px;color:var(--muted);letter-spacing:.3em}
+.hero h1{font-size:26px;margin:4px 0 2px;letter-spacing:.06em}
+.box{background:var(--panel);border:2px solid var(--line);border-radius:6px;padding:12px 14px;margin-top:12px}
+.box h3{margin:0 0 6px;font-size:16px;color:var(--gold)}
+.box p{margin:0 0 .6em}
+.fld{display:flex;gap:8px;margin-top:10px}
+.fld label{flex:1;font-size:13px;color:var(--muted)}
+.fld input{width:100%;margin-top:2px;font:inherit;padding:8px 10px;border-radius:6px;border:2px solid var(--line);background:#14111b;color:var(--ink)}
+
+.roster{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.rc{background:var(--panel2);border:2px solid var(--line);border-radius:6px;padding:6px;text-align:center;font-size:12.5px;line-height:1.3;transition:all .08s}
+.rc canvas{width:100%;max-width:72px;margin:0 auto 4px;border:2px solid #0e0c14}
+.rc.hot{border-color:var(--gold);background:#3d3424;transform:scale(1.04)}
+.rc.dim{opacity:.35}
+.rolecard{display:flex;gap:12px;align-items:flex-start}
+.rolecard canvas{width:96px;height:120px;border:2px solid #0e0c14;flex:none}
+.rolecard h2{margin:0 0 2px;font-size:22px;color:var(--gold)}
+
+.endhd{text-align:center;background:#0e0c14;border:2px solid var(--line);border-radius:6px;padding:16px 12px}
+.endhd .kick{font-size:12px;letter-spacing:.35em;color:var(--muted)}
+.endhd h1{margin:4px 0 2px;font-size:28px;color:var(--gold);letter-spacing:.08em}
+.endhd .job{display:inline-block;background:var(--red);color:#fff;font-weight:700;padding:1px 12px;border-radius:3px;margin-bottom:6px}
+.tl{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0}
+.tl div{text-align:center;font-size:12px;color:var(--muted)}
+.tl canvas{width:72px;height:90px;border:2px solid #0e0c14;margin:0 auto 2px}
+.real{background:#f1e4c6;color:#2a211a;border-radius:4px;padding:8px 12px;margin-top:8px;font-size:14.5px}
+.real b{font-size:15px}.real .yrs{font-size:12.5px;color:#7b6a55;margin-left:6px}
+.log{width:100%;border-collapse:collapse;font-size:14.5px}
+.log td{border-bottom:1px solid var(--line);padding:6px 4px;vertical-align:top}
+.log td:first-child{color:var(--gold);font-weight:700;white-space:nowrap}
+.tg{font-size:12px;padding:0 6px;border-radius:3px;background:var(--panel2);white-space:nowrap}
+.shot{width:100%;border:2px solid var(--line);border-radius:6px;margin-top:10px}
+.ep{font-size:17px;font-weight:800;color:var(--gold);margin:2px 0 6px;letter-spacing:.02em}
+.hook{color:#8fd6b7;font-weight:700;font-size:14.5px;margin-bottom:6px;border-left:3px solid #3e6a5c;padding-left:8px}
+.hero .sub{font-size:15px;color:var(--gold);font-weight:700;margin-top:2px}
+.swot{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.swot div{border-radius:6px;padding:6px 8px;font-size:13.5px;line-height:1.45;background:var(--panel2);border:1px solid var(--line)}
+.swot b{display:block;font-size:13px;margin-bottom:2px}
+.swot .s b{color:#8fd6b7}.swot .w b{color:#f08c80}.swot .o b{color:#e0b04a}.swot .t b{color:#b9a6e8}
+.tree{margin-top:8px;font-size:13px}
+.tree .row{display:flex;align-items:center;gap:4px;margin:4px 0;flex-wrap:wrap}
+.tree .ln{width:52px;color:var(--muted)}
+.node{padding:1px 8px;border-radius:12px;border:1.5px solid var(--line);color:#6f6680;background:#1a1722}
+.node.on{border-color:var(--gold);color:#1d1a26;background:var(--gold);font-weight:700;box-shadow:0 0 6px rgba(224,176,74,.6)}
+.tree .ar{color:#5a5168}
+.strip{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:12px;margin:-2px 0 8px;color:var(--muted)}
+.strip .node{font-size:12px;padding:0 6px}
+details.lg{border-bottom:1px solid var(--line);padding:6px 0}
+details.lg summary{cursor:pointer;list-style:none;font-size:14.5px}
+details.lg summary::-webkit-details-marker{display:none}
+details.lg summary .yr2{color:var(--gold);font-weight:700;margin-right:6px}
+details.lg summary .more2{float:right;color:var(--muted);font-size:12px}
+details.lg[open] summary .more2{transform:rotate(180deg)}
+.alt{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:7px 10px;margin-top:6px;font-size:14px}
+.alt.mine{border-color:var(--gold);background:#3d3424}
+.alt .hd{font-weight:700;margin-bottom:2px}
+.alt .badge{font-size:11.5px;padding:0 6px;border-radius:3px;margin-left:4px;background:var(--gold);color:#1d1a26}
+.alt .fit{font-size:11.5px;padding:0 6px;border-radius:3px;margin-left:4px;border:1px solid}
+.fit.g{color:#8fd6b7;border-color:#3e6a5c}.fit.b{color:#f08c80;border-color:#7d2a22}
+.ana{margin-top:8px;font-size:14px;background:#14111b;border-left:3px solid var(--gold);padding:6px 10px;border-radius:0 6px 6px 0}
+.rev{margin-top:6px;font-size:13.5px;color:#d9c7a1;background:#2a221a;border-radius:6px;padding:6px 10px}
+.gl{border-bottom:1.5px dotted var(--gold);cursor:help}
+.terms{font-size:13.5px;color:var(--muted);margin-top:8px}
+.terms .gl{color:var(--ink);padding:2px 0}
+.card .gl{border-bottom-color:#a87f2a}
+#tip{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);width:min(520px,calc(100% - 24px));background:#0e0c14;border:2px solid var(--gold);border-radius:8px;padding:10px 14px;z-index:20;box-shadow:0 6px 20px rgba(0,0,0,.5);animation:fade .2s ease}
+#tip b{color:var(--gold);font-size:17px}
+#tip .x{float:right;color:var(--muted);font-size:13px}
+textarea.cb{width:100%;height:150px;margin-top:8px;background:#14111b;color:var(--ink);border:2px solid var(--line);border-radius:6px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div id="tip" class="hidden"></div>
+
+<!--
+  ====================== 老師可修改區 ======================
+  劇情文字全部在下面的 JSON（roles 裡每個身分一段）。改引號裡的文字即可。
+  type：0 堅守、1 觀望、2 轉型｜effects：wealth 財力、family 家人、fame 名望、adapt 適應力
+  gain：學到的技能（識字、外語、算學、機械、商業、人脈）｜requires：需要其中任一技能才能選
+  =========================================================
+-->
+<script type="application/json" id="data">{"meta": {"title": "重生之我在晚清求生：點滿 SWOT 技能樹的逆襲之路", "intro": ["你只是個普通的國中生，昨晚還在熬夜趕社會科作業。一陣頭暈之後，你睜開眼——四周是木頭房子、油燈，還有一條垂在胸前的辮子。", "【叮！晚清求生系統已啟動】你重生到了 19 世紀的中國。前世的記憶越來越模糊，只剩下系統陪著你。接下來的 8 個關鍵時刻，每一個選擇都會改寫你這一世的命運。"], "disclaimer": "重生情節與主角皆為虛構；事件背景依據課本第 5 章〈西力衝擊下的東亞世界〉與相關史實。", "short": "重生之我在晚清求生"}, "stats": {"wealth": "財力", "family": "家人", "fame": "名望", "adapt": "適應力"}, "endings": {"順勢而起": "【逆襲成功】你看準時代的風口，提早點亮關鍵技能，從小人物一路逆襲，成了這個時代的弄潮兒。", "穩健過渡": "【穩穩通關】不搶第一，也不掉隊。你一步一步調整，平安走完了這動盪的一世。", "堅守而落寞": "【被時代拋下】你守住了熟悉的路，可是時代沒有等你。等你回頭，世界已經換了一個樣子。", "堅守而安穩": "【不變也是一種贏】你沒有大改變，而你的行業剛好躲過了衝擊。原來堅守，有時也是對的選擇。", "浪潮所迫": "【被浪潮推著走】你總是被迫重新開始，一次又一次。活下來了，但真的好累。", "轉型受挫": "【翻車現場】你勇敢轉型，卻在關鍵時刻押錯了寶。轉型不等於成功，時機和準備一樣重要。"}, "reflect": ["回顧你的決定紀錄：哪幾次是堅守、觀望、轉型？當時的理由是什麼？", "你的身分所在的行業，受到哪些社會變遷影響？適應得好的人，事先做了什麼準備？", "清末的他和現在面對 AI 的你，有哪些相似和不同？你現在可以開始準備什麼？"], "glossary": {"十三行": "清朝廣州專門和外國人做生意的商行，也指那一帶的商館區。", "行商": "十三行的商人。清朝規定外國人只能透過他們買賣。", "公行": "行商組成的團體，獨占和外國人的貿易。", "通事": "翻譯。替洋人和中國人傳話的人。", "買辦": "洋行請的中國經理，幫洋行收貨、管員工、和中國商人打交道。", "洋行": "外國人開的公司。", "洋務": "學習西方技術、和外國打交道的事，例如造船、電報、外交。", "自強運動": "1861 年起，清廷學習西方技術、想讓國家變強的改革。", "科舉": "用考試選官員的制度，考上才能當官。", "八股文": "科舉考試規定的文章寫法，格式很死板。", "秀才": "科舉第一關考上的人。", "舉人": "比秀才高一級，通過省裡考試的人。", "落第": "考試沒考上。", "幕府": "大官自己請人來幫忙辦事的團隊，像官員的「私人辦公室」。", "幕僚": "在幕府裡幫官員出主意、寫文書的人。", "團練": "地方上自己組織的民兵，用來保衛家鄉。", "公文": "官府的正式文件。", "湘軍": "曾國藩在湖南組織的軍隊，用來對抗太平天國。", "太平天國": "1851 年起的大規模起事，戰火延燒江南十幾年。", "私塾": "私人開的小學堂，老師教孩子讀書。", "塾師": "私塾的老師。", "同文館": "1862 年在北京成立的學校，教外語、培養翻譯。", "廣方言館": "1863 年在上海成立的學校，教外語和算學。", "算學": "數學。", "天文算學館": "同文館增設的部門，教天文和數學。", "船政局": "1866 年左宗棠在福州設立的造船廠。", "船政學堂": "船政局附設的學校，教造船和駕駛輪船。", "江南製造局": "1865 年在上海設立的兵工廠，造槍砲和輪船。", "製造局": "製造槍砲、機器的官辦工廠。", "金陵機器局": "1865 年在南京設立的兵工廠。", "內軍械所": "曾國藩在安慶設立的兵器工廠。", "招商局": "輪船招商局，1872 年創辦的中國輪船公司。", "官督商辦": "官府監督、商人出錢經營的公司。", "股本": "開公司時大家拿出來的錢。", "入股": "出錢成為公司的股東，公司賺錢就能分紅。", "股息": "公司賺錢後分給股東的錢。", "董事": "公司裡負責做重大決定的人。", "錢莊": "清朝的私人銀行，可以存錢、借錢。", "帳房": "管帳目的人，或管帳的地方。", "學徒": "跟著師傅學手藝的年輕人，通常沒什麼工錢。", "南京條約": "1842 年鴉片戰爭後簽的條約，開放五口通商、割讓香港。", "天津條約": "1858 年英法聯軍時簽的條約，開放更多通商口岸。", "五口通商": "南京條約開放廣州、廈門、福州、寧波、上海五個港口做生意。", "通商口岸": "開放給外國人做生意的港口城市。", "英法聯軍": "1856–1860 年英國和法國聯合攻打中國的戰爭。", "贖城費": "為了讓敵軍不攻城而付的錢。", "租界": "外國人在通商口岸自己管理的地區，中國官府管不到。", "小刀會": "1853 年占領上海縣城的民間組織。", "佃農": "沒有自己的田，向地主租田耕種的農民。", "苦力": "做粗重搬運工作的工人。", "工頭": "管理工人、分配工作的人。", "黃包車": "人力車，由人拉著跑的兩輪車。", "洋涇濱英語": "上海人邊做邊學、夾雜中文的簡單英語。", "廣東英語": "廣州人和洋人做生意時用的簡單英語。", "教會學堂": "外國傳教士開的學校，常常免學費。", "女紅": "紡紗、織布、刺繡等針線活。", "土紗": "用手紡出來的棉紗。", "洋紗": "用機器紡的棉紗，又便宜又均勻。", "土布": "用手工織布機織出來的布。", "繅絲": "把蠶繭泡在熱水裡，抽出細細的蠶絲。是做絲綢的第一步。", "生絲": "從蠶繭抽出來、還沒加工的絲，是清末重要的外銷貨。", "繅絲廠": "用機器把蠶繭抽成絲的工廠。", "女學": "給女孩讀書的學校。", "女工頭": "管理女工的領班。", "海國圖志": "魏源編寫的書，介紹世界各國的地理和情況。", "使節": "代表國家出使外國的官員。", "倭仁": "清朝大學士，反對讀書人跟洋人學天文算學。", "恭親王": "清朝親王，主持外交和自強運動。", "曾國藩": "清朝大臣，組織湘軍，推動自強運動。", "李鴻章": "清朝大臣，創辦許多新式工廠和公司。", "左宗棠": "清朝大臣，創辦福州船政局。", "林則徐": "清朝大臣，1839 年在廣州查禁鴉片。", "劉銘傳": "臺灣建省後的第一任巡撫，推動臺灣的現代化建設。", "巡撫": "一省的最高長官。", "清賦": "重新丈量土地、整頓稅收。", "海關": "管理港口進出貨物、收稅的機構。", "滬尾": "淡水的舊名。", "艋舺": "今天臺北的萬華，清朝北臺灣最熱鬧的港口。", "大稻埕": "今天臺北大同區一帶，清末茶行林立。", "烏龍茶": "半發酵的茶，臺灣北部重要的外銷品。", "包種茶": "加上花香製成的茶，主要賣到南洋。", "樟腦": "從樟樹提煉出來的東西，可以做藥和工業原料。", "南洋": "今天的東南亞。", "郊商": "用帆船和大陸做買賣的商人團體。", "電報": "用電線傳送文字訊息，幾分鐘就能傳到遠方。", "驛站": "古代傳送公文的中途站。", "驛差": "在驛站負責傳送公文的人。", "水師": "海軍。", "海軍衙門": "1885 年設立、管理海軍的機構。", "北洋艦隊": "李鴻章建立的新式海軍。", "衙門": "官府辦公的地方。", "漢奸": "罵人背叛中國、幫外國人做事的話。", "鴉片": "讓人上癮的毒品，當時英國大量走私到中國。", "虎門": "廣東的地名，林則徐在這裡銷毀鴉片。", "軍需": "軍隊需要的物資。", "夷情": "外國的情況。「夷」是當時對外國的稱呼。", "漕運": "用船把南方的糧食運到北京。", "錫蘭": "今天的斯里蘭卡，英國人在那裡大量種茶。", "留美幼童": "1872 年起清廷挑選小孩到美國讀書的計畫。", "領事裁判權": "外國人在中國犯罪，由他們自己國家的官員審判。", "協定關稅": "進口貨物的稅率要和外國商量，中國不能自己決定。", "西學堂": "劉銘傳在臺北設立的學校，教外語和西方學問。"}, "roles": [{"id": "gz", "name": "廣州行商之子", "short": "行商之子", "born": "1826 年生於廣州十三行商人家庭", "intro": ["你睜開眼，發現自己穿著綢緞衣服，躺在雕花大床上——這一世，你是廣州十三行行商家的少爺！", "【系統提示】開局資源：家財萬貫。但系統也偵測到：外面的世界，即將天翻地覆……"], "start": {"wealth": 8, "family": 7, "fame": 6, "adapt": 3}, "skills": ["識字", "商業"], "startRole": "行商之子", "startPlace": "廣州", "looks": {"kid": {"robe": "blue", "queueFront": true}, "young": {"robe": "teal", "hat": "skull"}, "mid": {"robe": "teal", "hat": "skull", "magua": true}, "old": {"robe": "brown", "magua": true, "hat": "skull"}, "oldFinal": {"prop": "cane"}}, "real": [{"name": "唐廷樞", "years": "1832–1892", "text": "廣東香山人，少年時在教會學校學英文，先當翻譯，1863 年成為英商怡和洋行在上海的買辦。1873 年起主持輪船招商局，後來又創辦開平煤礦，被視為中國最早的近代企業家之一。"}, {"name": "徐潤", "years": "1838–1911", "text": "寶順洋行買辦出身，後來參與經營輪船招商局。他大量投資上海房地產，卻在 1883 年金融風潮中嚴重虧損，幾乎破產。"}, {"name": "鄭觀應", "years": "1842–1922", "text": "也是買辦出身，參與招商局等新式企業。他寫下《盛世危言》，主張中國要學習西方的商業與制度。"}], "ai": "中間商、翻譯、行政代辦的工作，正被網路平台和 AI 取代。如果他活在今天，他「不可取代的價值」會是什麼？你的呢？", "events": [{"year": 1839, "age": 13, "stage": "少年", "title": "禁煙與戰雲", "book": "課本｜廣州一口通商、林則徐查禁鴉片", "bg": "canton", "music": "calm", "scene": ["1839 年，林則徐來到廣州查禁鴉片，洋商和官府的關係越來越緊張。", "父親把你叫到帳房：「你十三歲了。接下來幾年，你想把時間花在哪裡？」"], "question": "你決定學什麼？", "options": [{"type": 0, "label": "專心讀書，準備考科舉", "result": "父親點點頭：「有了功名，官府才不敢隨便欺負我們家。」你每天苦讀經書。", "effects": {"fame": 1}, "look": {"prop": "book"}}, {"type": 1, "label": "跟父親學帳房和做生意", "result": "你跟著帳房先生學打算盤、看帳本，很快就能算出一船茶葉賺多少錢。", "effects": {"wealth": 1}, "gain": ["算學"], "look": {"prop": "abacus"}}, {"type": 2, "label": "跟通事學「廣東英語」", "result": "你偷偷跟通事（翻譯）學洋人的話。親戚笑你：「少爺學番話，沒出息！」但你已經聽得懂洋人談價錢了。", "effects": {"fame": -1, "adapt": 1}, "gain": ["外語"], "look": {"prop": "ledger"}}], "card": {"decline": "鴉片走私的中間人：朝廷嚴格查禁", "rise": "通事（翻譯）：會外語的人很少，非常吃香", "learn": "讀書考科舉是正途；外語只能私下向通事或傳教士學"}, "ep": "第1集｜開局就是禁煙風暴？！", "hook": "【系統】偵測到時代巨變！請選擇你的第一個技能方向。", "review": "通事和買辦後來成了最吃香的職業之一；不過在當時，讀書考科舉仍是最受尊敬的出路。"}, {"year": 1841, "age": 15, "stage": "少年", "title": "戰事攤派", "book": "課本｜鴉片戰爭", "bg": "war", "music": "tense", "mood": "worry", "scene": ["鴉片戰爭爆發。1841 年，英軍打到廣州城外，砲聲從珠江上傳來。", "為了讓英軍退兵，廣州官員答應交出六百萬元的「贖城費」，行商被要求拿出大筆銀兩。父親問你：「家裡要出錢，你覺得該怎麼辦？」"], "question": "家裡該怎麼籌這筆錢？", "options": [{"type": 0, "label": "變賣家中田產，照數繳納", "result": "你們賣掉好幾處田產，總算把錢繳清。官府稱讚你家顧全大局，但家底少了一大塊。", "effects": {"wealth": -2, "fame": 2}}, {"type": 1, "label": "先向同行借錢，保住家產", "result": "你們向其他行商借了一筆錢。家產暫時保住，但從此背上一筆債。", "effects": {"wealth": -1}, "flags": ["debt"]}, {"type": 2, "label": "悄悄把部分財產轉到澳門", "result": "你和父親把一部分銀兩和貨物轉到澳門，家產保住大半，也認識了澳門的商人。可是同行知道後，都說你家不講義氣。", "effects": {"fame": -2, "adapt": 1}, "gain": ["人脈"], "fit": 1}], "card": {"decline": "行商：財富在戰爭中大量流失", "rise": "戰爭期間，只有軍需和運輸生意興旺", "learn": "林則徐請人翻譯外國書報，想了解西方"}, "ep": "第2集｜英軍兵臨城下，家產保不住了？", "hook": "【系統警告】財力即將大幅波動！", "review": "1841 年廣州交出六百萬元贖城費，許多行商因戰爭和攤派元氣大傷。"}, {"year": 1843, "age": 17, "stage": "青年", "title": "公行廢止", "book": "課本｜南京條約、五口通商", "bg": "shop", "music": "tense", "mood": "worry", "scene": ["1842 年清廷戰敗，簽訂南京條約：割讓香港、賠款，開放廣州、廈門、福州、寧波、上海五口通商。", "從此洋商可以和任何商人自由交易，行商獨占貿易的特權沒了。老主顧一個個離開，父親也病倒了。"], "question": "你是家中長子，接下來怎麼辦？", "options": [{"type": 0, "label": "留在廣州，照舊做一般買賣", "result": "你守著老店，和本地商人做些小生意。日子還過得去，但賺得一年比一年少。", "effects": {"wealth": -1, "fame": 1}, "role": "廣州商號東家", "fit": -1}, {"type": 1, "label": "先看看洋行怎麼做，再決定", "result": "你常到洋行附近打聽消息，暗暗記下他們做生意的方法。家裡的生意暫時停在原地。", "effects": {"adapt": 1}}, {"type": 2, "label": "跟著洋商走：進洋行做事，或北上上海", "branches": [{"if": ["外語", "人脈"], "result": "你憑著會說洋話、認識洋商，進了英國洋行當通事。薪水不錯，但有人在背後說你「吃洋人飯」。", "effects": {"wealth": 2, "fame": -1, "adapt": 1}, "gain": ["人脈"], "role": "洋行通事", "look": {"robe": "ink", "prop": "ledger", "watch": true}, "fit": 1}, {"result": "你不會外語，進不了洋行，只好帶著一點本錢北上上海闖蕩，一切從頭開始。", "effects": {"wealth": -1, "family": -1, "adapt": 2}, "role": "上海小商人", "place": "上海", "flags": ["shanghai"], "forced": true}]}], "card": {"decline": "廣州行商：公行制度廢止，特權消失", "rise": "通事、買辦：洋行需要懂中國市場的人", "learn": "教會開始辦學校教英文，例如香港的馬禮遜學堂"}, "ep": "第3集｜特權沒了！少爺一夕變落難東家", "hook": "內心OS：完了……課本好像有教過什麼「五口通商」？", "review": "南京條約廢除公行，行商失去獨占特權；懂外語、懂洋行的人反而迎來機會。"}, {"year": 1853, "age": 27, "stage": "青年", "title": "上海崛起", "book": "課本｜五口通商後的新局", "bg": "bund", "music": "calm", "scene": ["開港十年，上海靠近長江口，生絲和茶葉都從這裡運出，生意越來越熱鬧；廣州的對外貿易卻慢慢被上海超越。", "你現在在{place}。朋友說：「要做洋貨生意，就要在上海！」"], "question": "面對上海的崛起，你怎麼做？", "options": [{"type": 0, "label": "守住現在熟悉的生意", "result": "你守著熟悉的街坊和老客人，心裡踏實，可是新的機會都在別處。", "effects": {"wealth": -1, "family": 2}, "fit": -1}, {"type": 1, "label": "先派夥計到處探路，打聽行情", "result": "夥計帶回消息：上海的洋行越開越多，絲茶價錢也比廣州好。你把這些記在心裡。", "effects": {"adapt": 1}}, {"type": 2, "label": "把生意重心全部押在上海", "branches": [{"if": ["shanghai"], "result": "你早就在上海，這回把全部本錢投進上海的絲茶生意，生意越做越大。", "effects": {"wealth": 2, "adapt": 1}, "gain": ["商業"], "fit": 1}, {"result": "你帶著家人搬到上海。新環境讓家人很不習慣，但生意確實好做多了。", "effects": {"wealth": 2, "family": -1, "adapt": 1}, "place": "上海", "flags": ["shanghai"], "fit": 1}]}], "card": {"decline": "廣州的對外貿易：被上海超越", "rise": "上海的絲茶出口、洋行、碼頭工作", "learn": "上海的教會學校和洋行學徒，成了學外語的新管道"}, "ep": "第4集｜上海崛起，要不要搬家？", "hook": "【系統】新地圖「上海」已解鎖。", "review": "1850 年代起，上海的對外貿易超越廣州，成為中國最重要的通商口岸。"}, {"year": 1857, "age": 31, "stage": "青年", "title": "英法聯軍占領廣州", "book": "課本｜英法聯軍", "bg": "siege", "music": "tense", "mood": "worry", "scene": ["英國希望全面通商，被清廷拒絕，於是聯合法國出兵。1856 年，廣州十三行商館區在戰火中燒成焦土；1857 年底，英法聯軍攻占廣州城。", "你人在{place}，親戚和老宅還在廣州。英法商人透過朋友找上你，想找熟悉中國市場的人合作。"], "question": "戰火之中，你怎麼做？", "options": [{"type": 0, "label": "避開戰亂，不管局勢", "result": "你帶家人躲到鄉下。生意停了幾個月，但全家平安團聚，親戚都很感激你。", "effects": {"wealth": -1, "family": 2}}, {"type": 1, "label": "官府和洋商都不得罪，靜觀其變", "result": "你處處小心，官府和洋商都不得罪。生意縮小了，但沒惹上麻煩。", "effects": {"wealth": -1, "adapt": 1}}, {"type": 2, "label": "和英法商人合作，擴大生意", "result": "你替英法商人收購貨物，賺了不少錢，也認識更多洋商。可是鄉親罵你是「漢奸」，還有人朝你家丟石頭。", "effects": {"wealth": 2, "fame": -2, "family": -1}, "gain": ["人脈"]}], "card": {"decline": "廣州老商號：一再遭受戰火打擊", "rise": "替軍隊與洋行運補的生意", "learn": "戰亂中，懂外國事務的人更受重用"}, "ep": "第5集｜英法聯軍打進來了", "hook": "【系統警告】家人安全受到威脅！", "review": "英法聯軍占領廣州好幾年。和洋人合作能賺錢，卻常被鄉里罵成「漢奸」。"}, {"year": 1862, "age": 36, "stage": "中年", "title": "買辦的機會", "book": "課本｜天津條約、通商口岸增加", "bg": "office", "music": "calm", "scene": ["1858 年天津條約簽訂後，通商口岸從沿海一路開到長江沿岸。洋行迅速增加，需要大量「買辦」：替洋行收購貨物、管理中國員工、處理和中國人的生意。", "買辦收入很高。一家洋行派人來問：你願不願意當他們的買辦？"], "question": "你的回答是？", "options": [{"type": 0, "label": "婉拒，繼續經營自家商號", "result": "你守著自家商號。洋行的競爭越來越強，生意難做，但你仍是自己的老闆。", "effects": {"wealth": -1, "fame": 1, "family": 1}, "fit": -1}, {"type": 1, "label": "先兼差幫洋行做事，試試水溫", "result": "你一邊顧自家生意，一邊替洋行收貨。多了一份收入，也學到洋行做生意的方法。", "effects": {"wealth": 1, "adapt": 1}, "gain": ["商業"]}, {"type": 2, "label": "辭掉舊業，當全職買辦", "requires": ["外語", "人脈"], "lockedHint": "洋行只找「會外語」或「有洋商人脈」的人當買辦。", "result": "你成了洋行的全職買辦，收入是從前的好幾倍。你穿著體面的長袍出入洋行，身上掛著金懷錶。", "effects": {"wealth": 3, "fame": -2, "adapt": 1}, "gain": ["商業"], "role": "洋行買辦", "look": {"robe": "ink", "prop": "ledger", "watch": true}, "fit": 1}], "card": {"decline": "只靠舊關係做生意的傳統商號", "rise": "買辦：收入高，社會評價卻兩極", "learn": "在洋行工作，就是學習西式商業的「學校」"}, "ep": "第6集｜年薪翻倍的工作找上門", "hook": "【系統】隱藏職業「買辦」已開放，條件：外語或人脈。", "review": "唐廷樞、徐潤都是買辦出身，後來成為中國第一批近代企業家。"}, {"year": 1873, "age": 47, "stage": "中年", "title": "輪船招商局", "book": "課本｜自強運動", "bg": "steamer", "music": "calm", "scene": ["自強運動期間，李鴻章在 1872 年創辦「輪船招商局」，用輪船運送糧食和貨物，和外國輪船公司競爭。", "招商局採「官督商辦」：官府監督，向商人招募股本。你也收到了入股的邀請。"], "question": "要不要加入這個新事業？", "options": [{"type": 0, "label": "不碰新事業，維持現有收入", "result": "你覺得官府插手的生意風險太大，決定不參加。收入穩定，但錯過了這波新事業。", "effects": {"family": 1}}, {"type": 1, "label": "先小額入股，看看情形", "result": "你拿出一小筆錢入股，年底分到一點股息，也開始了解輪船生意怎麼經營。", "effects": {"wealth": 1, "adapt": 1}}, {"type": 2, "label": "大筆入股，並參與經營", "requires": ["商業", "人脈"], "lockedHint": "招商局只請「懂商業經營」或「有人脈」的商人參與經營。", "result": "你投入大筆資金，成為招商局的董事之一，和官員、洋商一起討論航線和運價。你的名聲傳遍上海，只是忙得很少回家。", "effects": {"wealth": 2, "fame": 2, "family": -1}, "role": "招商局董事", "fit": 1, "flags": ["invested"]}], "card": {"decline": "木帆船運輸：被輪船取代", "rise": "輪船航運、碼頭、保險", "learn": "官督商辦的新式企業，培養出第一批中國近代企業家"}, "ep": "第7集｜要不要投資新公司「招商局」？", "hook": "【系統】新任務：輪船招商局募資中。", "review": "招商局在官督商辦下和外國輪船公司競爭，培養出中國最早的一批企業家。"}, {"year": 1883, "age": 57, "stage": "中年", "title": "金融風潮", "book": "延伸｜1883 年上海金融風潮", "bg": "bankrun", "music": "tense", "mood": "worry", "scene": ["這幾年上海地價飛漲，許多商人把錢投進房地產和新的礦業公司。", "1883 年，傳出中法可能開戰的消息，大家都很害怕。錢莊一家接一家倒閉，地價和股價一夜之間大跌。"], "question": "你手上的錢該怎麼辦？", "options": [{"type": 0, "label": "全部撤出，換成田地和現銀", "result": "你及時把錢撤出。雖然少賺了前幾年的漲幅，但風暴來時，你的家產幾乎沒受影響。", "effects": {"family": 1}, "fit": 1}, {"type": 1, "label": "分散在幾個地方，不全押一處", "result": "你的錢分在田地、商號和股份裡。股價大跌讓你賠了一些，但大部分家產保住了。", "effects": {"wealth": -1}, "fit": 1}, {"type": 2, "label": "趁價格下跌，加碼房地產和新公司", "result": "你以為這是低價買進的好機會，把錢都投了進去。沒想到價格一跌再跌，錢莊又追著你還債，你幾乎破產。", "effects": {"wealth": -5, "fame": -2, "family": -1}, "fit": -1}], "card": {"decline": "錢莊：大批倒閉", "rise": "風暴之中，手上有現金的人最安全", "learn": "投資前先看清風險——這一課，許多商人付出了慘痛代價"}, "ep": "第8集｜股災來襲，全部押下還是快逃？", "hook": "【系統警告】偵測到金融風暴！", "review": "1883 年上海金融風潮，錢莊大量倒閉，徐潤因投資房地產幾乎破產。"}], "swot": {"S": "家裡有錢，從小看大人做生意", "W": "只會靠朝廷給的特權做生意，不懂外語", "O": "外國商人越來越多，需要懂行的中國人", "T": "戰爭和條約，可能讓行商的特權消失"}}, {"id": "scholar", "name": "科舉士子", "short": "科舉士子", "born": "1830 年生於蘇州的讀書人家庭", "intro": ["你睜開眼，眼前是一疊又一疊的書，耳邊是老師搖頭晃腦的背書聲——這一世，你是蘇州讀書人家的孩子，全家都盼你考取功名。", "【系統提示】開局技能：識字。考試模式已開啟……但系統偵測到，考試的規則可能會改變。"], "start": {"wealth": 5, "family": 7, "fame": 5, "adapt": 4}, "skills": ["識字"], "startRole": "讀書人", "startPlace": "蘇州", "looks": {"kid": {"robe": "sky", "queueFront": true, "prop": "book"}, "young": {"robe": "sky", "hat": "scholar", "prop": "scroll"}, "mid": {"robe": "sky", "hat": "skull", "magua": true}, "old": {"robe": "sky", "hat": "skull", "magua": true}, "oldFinal": {"prop": "cane"}}, "real": [{"name": "王韜", "years": "1828–1897", "text": "蘇州一帶的秀才，鄉試不中，後來到上海的西式印刷所幫傳教士翻譯書籍。他曾遊歷英國，回到香港辦報，用報紙介紹西方，主張變法。"}, {"name": "郭嵩燾", "years": "1818–1891", "text": "進士出身。1876 年出使英國，成為中國第一位駐外公使。他寫日記稱讚西方的制度，回國後卻被守舊的官員批評。"}, {"name": "嚴復", "years": "1854–1921", "text": "沒有走科舉，而是進了福州船政學堂，後來留學英國。他翻譯《天演論》，影響了許多中國讀書人。"}], "ai": "清末讀書人寒窗苦讀的「八股文」，後來突然不考了。今天，學歷和證照的價值也在改變。AI 時代，我們該學什麼、怎麼學？", "events": [{"year": 1844, "age": 14, "stage": "少年", "title": "書房裡的新書", "book": "課本｜鴉片戰爭後的新知", "bg": "study", "music": "calm", "scene": ["鴉片戰爭結束後，有人開始介紹外國。魏源編寫了《海國圖志》，書裡有世界地圖和各國的介紹。", "一位朋友把這本書塞給你：「你看，原來天下這麼大！」老師卻說：「考試又不考這個，專心寫你的八股文。」"], "question": "你怎麼安排讀書時間？", "options": [{"type": 0, "label": "專心練八股文，準備考試", "result": "你把新書放回書架，每天背書、寫文章。老師稱讚你的八股文越寫越工整。", "effects": {"fame": 1}, "flags": ["classics"]}, {"type": 1, "label": "讀完正課，再偷空翻翻新書", "result": "你白天寫八股文，晚上偷偷翻《海國圖志》。書裡的世界地圖讓你看了好久。", "effects": {"adapt": 1}}, {"type": 2, "label": "認真研讀地理和外國的書", "result": "你花很多時間研究世界各國，還自己畫地圖。老師搖頭說你「不務正業」，你的八股文也退步了。", "effects": {"fame": -1, "adapt": 2}, "flags": ["xinxue"]}], "card": {"decline": "暫時看不出來——科舉仍是最受尊敬的出路", "rise": "懂得「夷情」的人：林則徐、魏源開始介紹外國", "learn": "《海國圖志》介紹世界地理，但在中國讀的人不多"}, "ep": "第1集｜考試不考的書，要不要讀？", "hook": "【系統】發現稀有道具：《海國圖志》。", "review": "《海國圖志》在中國讀的人不多，傳到日本卻很受重視，影響了日本的改革。"}, {"year": 1860, "age": 30, "stage": "青年", "title": "戰火中斷了考試", "book": "延伸｜太平天國", "bg": "refuge", "music": "tense", "mood": "worry", "scene": ["你已經考上秀才，正準備考舉人。但太平天國的軍隊攻進江南，1860 年蘇州失守，科舉考試也停辦了。", "城裡的人四處逃難。這時，曾國藩、李鴻章等官員正在招募讀書人到他們的「幕府」幫忙處理公文和軍務。"], "question": "戰亂之中，你怎麼辦？", "options": [{"type": 0, "label": "帶家人逃到鄉下，等考試恢復", "result": "你們一路逃難，住進遠房親戚家。書本丟了大半，日子很苦，但你每晚仍讀書，等著考試恢復。", "effects": {"wealth": -2, "family": 2}, "forced": true}, {"type": 1, "label": "加入地方團練，保衛家鄉", "result": "你跟著地方上有名望的人組織團練，負責寫告示、管帳目。家鄉暫時平安，你也認識了不少地方人物。", "effects": {"family": -1, "fame": 1}, "gain": ["人脈"]}, {"type": 2, "label": "投入官員幕府，當幕僚", "result": "你進入幕府，替官員寫公文、處理軍隊的事。你第一次看到洋槍、洋砲，也見識到「洋務」有多重要。", "effects": {"fame": 1, "adapt": 1}, "gain": ["人脈"], "role": "幕府幕僚", "fit": 1}], "card": {"decline": "江南的書院與科考：因戰亂中斷", "rise": "幕府幕僚：曾國藩、李鴻章廣招人才", "learn": "幕府成了讀書人學習實務的新管道"}, "ep": "第2集｜戰火燒到考場", "hook": "【系統警告】科舉暫停！請選擇生存路線。", "review": "太平天國戰爭期間，許多讀書人進入曾國藩、李鴻章的幕府，後來成為洋務人才。"}, {"year": 1863, "age": 33, "stage": "青年", "title": "學外語的學校", "book": "課本｜自強運動", "bg": "school", "music": "calm", "scene": ["自強運動開始了。1862 年北京成立京師同文館，1863 年上海也設立廣方言館，招收學生學外語和算學，培養翻譯人才。", "有人問你要不要去報考。你的同學冷笑：「讀書人去學洋文？丟不丟臉！」"], "question": "你的決定是？", "options": [{"type": 0, "label": "繼續準備科舉，不去湊熱鬧", "result": "你回到書桌前。科舉恢復後，你又開始準備考舉人。", "effects": {"fame": 1}}, {"type": 1, "label": "先去旁聽幾堂課看看", "result": "你偷偷去聽了幾堂課，學會幾個英文字母和簡單的算術。原來洋人的學問也不簡單。", "effects": {"adapt": 1}, "gain": ["算學"]}, {"type": 2, "label": "正式報考，學外語和算學", "result": "你考進了廣方言館，開始學英文和西方算學。同學笑你，但老師說你進步很快。", "effects": {"fame": -1, "adapt": 2}, "gain": ["外語", "算學"], "role": "廣方言館學生", "fit": 1}], "card": {"decline": "只學八股文的人：出路開始變窄（但科舉仍在）", "rise": "翻譯人才：外交與洋務都缺人", "learn": "京師同文館（1862）、上海廣方言館（1863）教外語與算學"}, "ep": "第3集｜讀書人學洋文？丟不丟臉！", "hook": "【系統】新學習管道「同文館、廣方言館」已開放。", "review": "同文館和廣方言館培養了第一批外語人才，但當時願意報考的讀書人並不多。"}, {"year": 1867, "age": 37, "stage": "青年", "title": "天文算學館之爭", "book": "延伸｜同文館論爭", "bg": "court", "music": "tense", "scene": ["1867 年，恭親王向皇帝建議在同文館增設「天文算學館」，還想招收科舉出身的讀書人，請洋人來教。", "大學士倭仁強烈反對：「讀書人應該學禮義，怎麼能拜洋人為師？」朝廷內外吵成一團，你的朋友們也分成兩派。"], "question": "朋友問你站哪一邊，你怎麼回答？", "options": [{"type": 0, "label": "支持倭仁：禮義才是根本", "result": "你寫文章支持倭仁，守舊的士人都稱讚你有骨氣。不過，那些辦洋務的官員從此不太找你。", "effects": {"fame": 2, "adapt": -1}}, {"type": 1, "label": "保持沉默，兩邊都不得罪", "result": "你什麼也沒說。爭論最後沒有結果，你也沒得罪任何人。", "effects": {}}, {"type": 2, "label": "支持設館：學算學才能自強", "result": "你公開支持設立算學館。守舊的朋友和你疏遠了，但辦洋務的官員記住了你的名字。", "effects": {"fame": -1, "adapt": 1}, "gain": ["人脈"], "fit": 1}], "card": {"decline": "兩派爭吵不休，報考算學館的人很少", "rise": "懂天文、算學的人才", "learn": "同文館增設天文算學館，想招收科舉出身的人"}, "ep": "第4集｜朝廷大辯論，你站哪一邊？", "hook": "內心OS：這種吵法……怎麼跟網路上的筆戰有點像？", "review": "1867 年的爭論後，報考天文算學館的人很少，可見當時守舊的觀念很強。"}, {"year": 1872, "age": 42, "stage": "中年", "title": "幼童留美", "book": "課本｜派出留學生", "bg": "steamer", "music": "calm", "scene": ["1872 年，朝廷接受容閎的建議，挑選幼童到美國讀書，預計一去十五年。", "你的姪子十二歲，聰明伶俐。哥哥來問你：「你讀過書、見識多，你說，這孩子該不該去？」"], "question": "你給哥哥什麼建議？", "options": [{"type": 0, "label": "不要送：留在家裡讀書考科舉", "result": "你勸哥哥把孩子留在身邊。全家都鬆了一口氣。", "effects": {"family": 1}}, {"type": 1, "label": "先等第一批回報，再決定", "result": "你建議再觀察幾年。哥哥點點頭，孩子繼續在私塾讀書。", "effects": {}}, {"type": 2, "label": "送去吧：這是學新學問的機會", "result": "孩子上了船。嫂嫂哭了好幾天，親戚也怪你多事。但你相信，他將來會成為國家需要的人。", "effects": {"family": -1, "fame": -1, "adapt": 1}, "fit": 1, "flags": ["kid_abroad"]}], "card": {"decline": "只準備科舉的年輕人：選擇開始變少", "rise": "鐵路、電報、礦業工程師", "learn": "留學：1872 年起分四批，共 120 名幼童赴美"}, "ep": "第5集｜送孩子出國 15 年？", "hook": "【系統】限定活動：幼童留美計畫。", "review": "留美幼童 1881 年被提前召回，但不少人後來成為鐵路、電報和外交人才，例如詹天佑。"}, {"year": 1876, "age": 46, "stage": "中年", "title": "又一次落第", "book": "延伸｜清末的科舉", "bg": "examhall", "music": "tense", "mood": "worry", "scene": ["你又一次走出考場，看了榜單，還是沒有你的名字。你已經四十六歲，考了好多次舉人都沒考上。", "這時傳來消息：郭嵩燾要出使英國，正在找隨行人員；洋務局也缺能寫公文的人。"], "question": "下一步怎麼走？", "options": [{"type": 0, "label": "不放棄，再考一次", "branches": [{"if": ["classics"], "result": "你多年苦練的八股文終於派上用場——這回你考中舉人了！鄉里為你放鞭炮慶祝。", "effects": {"fame": 2, "wealth": -1}, "role": "舉人"}, {"result": "你又考了一次，還是落榜。家裡為了供你考試，已經賣掉不少東西。", "effects": {"fame": -1, "wealth": -1, "family": -1}, "fit": -1}]}, {"type": 1, "label": "先到洋務局兼差寫公文", "result": "你一邊準備考試，一邊在洋務局寫公文。薪水不多，但總算有固定收入。", "effects": {"wealth": 1, "adapt": 1}, "role": "洋務局文案"}, {"type": 2, "label": "應徵隨使節出洋", "requires": ["外語", "人脈"], "lockedHint": "使館只找「會外語」或「有洋務人脈」的人隨行。", "result": "你隨使節到了倫敦，看到鐵路、議會和報紙，從此看事情的角度完全不同。只是一去兩年，家人非常想念你。", "effects": {"wealth": 1, "fame": 1, "adapt": 2, "family": -1}, "gain": ["外語"], "role": "使館隨員", "fit": 1}], "card": {"decline": "多次落第的讀書人：出路越來越窄", "rise": "外交使館的隨員、翻譯", "learn": "隨使節出洋，親眼看見西方"}, "ep": "第6集｜又落榜了，人生要重來嗎？", "hook": "【系統】隱藏路線「出使外國」，條件：外語或人脈。", "review": "郭嵩燾 1876 年出使英國，是中國第一位駐外公使；他稱讚西方制度，回國後卻飽受批評。"}, {"year": 1881, "age": 51, "stage": "中年", "title": "新式學堂", "book": "課本｜自強運動", "bg": "school", "music": "calm", "scene": ["天津陸續開辦新式學堂：1880 年電報學堂、1881 年水師學堂，之後還有武備學堂。這些學校教外語、算學、駕駛和電報。", "你的兒子十五歲了，正準備考科舉。妻子問你：「孩子要讀哪一種書？」"], "question": "你怎麼安排兒子的學業？", "options": [{"type": 0, "label": "繼續讀經書，走科舉正途", "result": "兒子每天在書房背書，準備考秀才。你親自教他寫八股文。", "effects": {"fame": 1}, "flags": ["kid_exam"]}, {"type": 1, "label": "先讓他讀經書，再看看學堂辦得如何", "result": "你決定再觀察幾年。兒子先繼續讀經書。", "effects": {}}, {"type": 2, "label": "送他進新式學堂", "result": "兒子考進了水師學堂，學英文、算學和駕駛輪船。親戚說你「讓孩子去當兵」，你卻覺得這是新的出路。", "effects": {"fame": -1, "adapt": 1}, "fit": 1, "flags": ["kid_school"]}], "card": {"decline": "只靠科舉晉身的單一道路", "rise": "電報員、海軍軍官、新式軍人", "learn": "天津電報學堂（1880）、水師學堂（1881）、武備學堂（1885）"}, "ep": "第7集｜兒子要讀經書還是新式學堂？", "hook": "【系統】新地圖「天津新式學堂」已開放。", "review": "電報學堂、水師學堂、武備學堂的畢業生，後來成為海軍、電報和軍事的骨幹。"}, {"year": 1887, "age": 57, "stage": "中年", "title": "算學也能考功名？", "book": "延伸｜1887 年算學取士之議", "bg": "study", "music": "calm", "scene": ["你現在在家鄉開私塾，教孩子讀書。", "1887 年，朝廷開始討論：懂算學的人，也應該能考取功名。學生的家長來問你：「先生，以後是不是也要學算學？」"], "question": "你的私塾要教什麼？", "options": [{"type": 0, "label": "照舊教經書和八股文", "result": "你照舊教學生背書、寫文章。家長們很放心，但有幾個學生轉去學算學了。", "effects": {"fame": 1}, "fit": -1}, {"type": 1, "label": "先觀察朝廷怎麼決定", "result": "你決定先等等看。私塾照常上課，你也開始留意算學的書。", "effects": {"adapt": 1}}, {"type": 2, "label": "在私塾裡加教算學", "branches": [{"if": ["算學"], "result": "你早就學過西方算學，教起來很順手。附近的家長都把孩子送來，你成了有名的算學先生。", "effects": {"fame": 2, "wealth": 1, "adapt": 1}, "role": "算學先生", "fit": 1}, {"result": "你不會算學，只好一邊自學一邊教，常常算錯被學生問倒。雖然辛苦，你總算跨出了第一步。", "effects": {"fame": -1, "adapt": 2}, "gain": ["算學"]}]}], "card": {"decline": "只會教八股文的塾師", "rise": "懂算學、外語的教師", "learn": "朝廷開始討論讓懂算學的人也能考取功名", "note": "1905 年，科舉制度正式廢除。準備了一輩子的考試，突然不考了。"}, "ep": "第8集｜數學也能考功名？", "hook": "內心OS：數學居然也能考功名？早知道就……", "review": "1905 年科舉廢除，只會八股文的讀書人頓失出路；懂算學、外語的人轉往新式學堂任教。"}], "swot": {"S": "識字讀書，社會地位高", "W": "只會讀經書，不懂實用的技能", "O": "洋務需要讀書人，新式學堂陸續出現", "T": "戰亂打斷考試，科舉越來越難考上"}}, {"id": "coolie", "name": "上海苦力「阿福」", "short": "上海苦力", "born": "1835 年生於江北農村的佃農家庭", "intro": ["你睜開眼，肚子餓得咕咕叫，身上是補了又補的粗布衣——這一世，你是江北窮佃農家的孩子「阿福」。", "【系統提示】開局資源：0。唯一的本錢，是一副年輕的身體。本局難度：地獄模式。"], "start": {"wealth": 2, "family": 5, "fame": 1, "adapt": 5}, "skills": [], "startRole": "佃農之子", "startPlace": "江北鄉下", "looks": {"kid": {"robe": "hemp", "poor": true, "queueFront": true}, "young": {"robe": "hemp", "poor": true, "towel": true, "queueFront": true}, "mid": {"robe": "gray2", "poor": true, "towel": true, "queueFront": true}, "old": {"robe": "gray2", "poor": true, "queueFront": true}, "oldFinal": {}}, "real": [{"name": "碼頭苦力", "years": "1840 年代起", "text": "上海開埠後，碼頭需要大量搬運工人。他們多半來自江北和上海近郊的貧窮農村，按件計酬，工作辛苦又沒有保障，常受工頭剝削。"}, {"name": "江南製造局的工匠", "years": "1865 年起", "text": "江南製造局招募了許多工人。原本是木匠、鐵匠的人，學會操作機器後成了技術工人，收入和地位都比苦力高。"}, {"name": "人力車夫", "years": "1874 年起", "text": "人力車傳入上海後，許多苦力改行拉車。拉車要向車行租車、繳車租，收入不穩，卻養活了無數家庭。"}], "ai": "重複性的體力工作和簡單的工作，最容易被機器和 AI 取代。阿福和他的孩子能靠什麼翻身？你又會開始累積哪些別人拿不走的能力？", "events": [{"year": 1846, "age": 11, "stage": "少年", "title": "上海開埠", "book": "課本｜五口通商", "bg": "village", "music": "calm", "scene": ["1843 年上海開港後，洋人在城北建起洋樓和碼頭，到處都需要人手。", "舅舅從上海回來，對你爹說：「上海搬貨、蓋房子都缺人，一天的工錢比種田多！讓阿福跟我去吧。」"], "question": "你怎麼辦？", "options": [{"type": 0, "label": "留在村裡，幫爹種田", "result": "你留在家裡，天天下田。收成不好的年頭，全家還是吃不飽，但一家人在一起。", "effects": {"family": 1}}, {"type": 1, "label": "先跟舅舅進城看看", "result": "你跟著舅舅到上海住了幾個月，看到高大的洋樓和冒煙的輪船，眼睛都看直了。", "effects": {"adapt": 1}}, {"type": 2, "label": "進城拜師，學木匠手藝", "result": "你在上海拜了一位木匠師傅，每天鋸木頭、刨木板。學徒很苦，但你學到了一技之長。", "effects": {"family": -1, "adapt": 1}, "gain": ["機械"], "role": "木匠學徒", "place": "上海", "fit": 1}], "card": {"decline": "佃農：天災加上地租，生活越來越苦", "rise": "上海的碼頭工人、泥水匠、木匠", "learn": "窮人家的孩子沒錢上學，學手藝要靠拜師當學徒"}, "ep": "第1集｜地獄開局：要不要進城？", "hook": "【系統】新地圖「上海」出現在遠方。", "review": "上海開埠後，大量江北和近郊的貧農湧入，成為碼頭苦力、泥水匠和木匠。"}, {"year": 1853, "age": 18, "stage": "青年", "title": "小刀會占領縣城", "book": "延伸｜上海小刀會起義", "bg": "citywall", "music": "tense", "mood": "worry", "scene": ["你已經到上海討生活。1853 年，「小刀會」起事，占領了上海縣城，和清軍打了一年多的仗。", "城裡亂成一團。有人找你加入小刀會：「跟著我們，以後就不用再受欺負！」也有人說，洋人的租界比較安全。"], "question": "亂局之中，你怎麼做？", "options": [{"type": 0, "label": "離開上海，回鄉下避難", "result": "你連夜趕回鄉下。家人見到你平安，鬆了一口氣，可是在上海好不容易找到的工作也沒了。", "effects": {"wealth": -1, "family": 2}, "place": "江北鄉下"}, {"type": 1, "label": "躲進租界，等亂事過去", "result": "你和許多難民一起擠進租界，找到搬貨的零工。租界的人越來越多，房租也跟著上漲。", "effects": {"wealth": 1, "adapt": 1}, "place": "上海"}, {"type": 2, "label": "加入小刀會", "result": "你跟著小刀會守城。1855 年清軍收復縣城，小刀會失敗，你好不容易才逃出來，家鄉的親人也被官府調查。", "effects": {"family": -2, "wealth": -1, "fame": 1}, "gain": ["人脈"], "fit": -1, "forced": true, "place": "上海"}], "card": {"decline": "上海縣城的商店和作坊：因戰亂停業", "rise": "租界裡的房屋出租、搬運與雜役", "learn": "戰亂讓許多人湧進租界，在那裡學到新的謀生方法"}, "ep": "第2集｜縣城被占領了！", "hook": "【系統警告】戰亂事件觸發！", "review": "小刀會占領上海縣城一年多後失敗；戰亂讓大批難民湧進租界，租界因此快速發展。"}, {"year": 1861, "age": 26, "stage": "青年", "title": "租界裡的小鳳", "book": "課本｜閱讀思考：小鳳的上海", "bg": "concession", "music": "calm", "scene": ["太平軍逼近上海，大批難民湧進租界。你在租界的街口遇到賣針線的小姑娘小鳳。", "小鳳指著街上的洋人說：「他們在這裡犯了罪，我們的官府也管不著。洋貨進口的稅，也不是我們自己能決定的。」租界越來越熱鬧，工作機會很多，但都是洋人說了算。"], "question": "你要在租界做什麼工作？", "options": [{"type": 0, "label": "在碼頭扛貨，賺力氣錢", "result": "你在碼頭扛麻袋、搬木箱，一天下來肩膀磨破皮。但碼頭的活天天有，收入很穩定。", "effects": {"wealth": 2, "family": -1}, "role": "碼頭苦力", "look": {"prop": "pole"}}, {"type": 1, "label": "學小鳳擺攤做小買賣", "result": "你在街口擺攤賣燒餅。小鳳教你怎麼招呼客人、怎麼算帳，生意慢慢穩定下來。", "effects": {"wealth": 1}, "gain": ["商業"], "role": "小販"}, {"type": 2, "label": "到洋行打雜，順便學洋涇濱英語", "result": "你在洋行掃地、跑腿，偷偷學會一些洋涇濱英語。洋人開始叫你幫忙傳話，工錢也多了一點。", "effects": {"wealth": 1, "adapt": 1}, "gain": ["外語"], "role": "洋行雜役", "fit": 1}], "card": {"decline": "城外的小作坊：被戰亂和洋貨擠壓", "rise": "租界裡的苦力、小販、洋行雜役", "learn": "「洋涇濱英語」：在工作中邊做邊學的外語"}, "ep": "第3集｜在租界遇見小鳳", "hook": "【系統】NPC「小鳳」加入劇情。", "review": "在租界裡，外國人享有領事裁判權，關稅也由條約決定——這正是課本裡小鳳看到的上海。"}, {"year": 1865, "age": 30, "stage": "青年", "title": "製造局招工", "book": "課本｜自強運動", "bg": "factory", "music": "calm", "scene": ["1865 年，李鴻章在上海設立江南製造局，製造槍砲和輪船。工廠裡有轟隆隆的蒸汽機，需要大量工人。", "工頭說：「會手藝的，學得會機器，工錢比扛貨多一倍！」"], "question": "你要不要去製造局？", "options": [{"type": 0, "label": "繼續做原本的工作", "result": "你覺得機器太危險，還是做原本熟悉的工作。收入沒變，日子照舊。", "effects": {"family": 1}}, {"type": 1, "label": "先去打聽，看看工錢和工作", "result": "你到製造局門口看了好幾天，聽工人們聊機器怎麼運轉。你對機器越來越好奇。", "effects": {"adapt": 1}}, {"type": 2, "label": "進製造局，學機器修理", "branches": [{"if": ["機械"], "result": "你有木匠底子，學機器學得特別快，不到兩年就升為技工，工錢比從前多了一倍。", "effects": {"wealth": 2, "adapt": 1, "fame": 1}, "role": "製造局技工", "look": {"prop": "wrench", "towel": false}, "fit": 1}, {"result": "你從最粗重的雜工做起，一邊做一邊偷學。手常被機器燙傷，但你學會了基本的修理功夫。", "effects": {"wealth": 1, "adapt": 1, "family": -1}, "gain": ["機械"], "role": "製造局學徒工", "look": {"prop": "wrench"}, "fit": 1}]}], "card": {"decline": "只靠手工的小鐵匠鋪：比不上機器", "rise": "工廠技工、機器修理工", "learn": "在工廠裡「做中學」，學會操作和修理機器"}, "ep": "第4集｜工廠在招人，工錢多一倍！", "hook": "【系統】技能「機械」可點亮。", "review": "江南製造局的工人學會操作機器後，成了技術工人，收入和地位都比苦力高。"}, {"year": 1874, "age": 39, "stage": "中年", "title": "黃包車來了", "book": "延伸｜人力車傳入上海", "bg": "street", "music": "calm", "scene": ["1874 年，從日本傳來一種新的交通工具：人力車。因為漆成黃色，大家叫它「黃包車」。", "坐車的人越來越多，原本抬轎、推獨輪車的人生意變差了。你的同鄉說：「去車行租一輛車來拉吧，比扛貨好賺！」"], "question": "你怎麼看這個新行業？", "options": [{"type": 0, "label": "繼續做現在的工作", "result": "你沒有改行。熟悉的工頭照顧你，工作還算穩定，只是工錢沒有增加。", "effects": {"family": 1}}, {"type": 1, "label": "先觀望，看拉車的人賺不賺", "result": "你看到拉車的同鄉有時賺得多、有時被扣車租，覺得還是再等等。", "effects": {}}, {"type": 2, "label": "改行：租車拉車，或進工廠", "branches": [{"if": ["機械"], "result": "你有技術，進了一家洋人的機器廠當機匠，收入穩定，不用再看天吃飯。", "effects": {"wealth": 2, "adapt": 1}, "role": "機器廠機匠", "look": {"prop": "wrench", "towel": false}, "fit": 1}, {"result": "你向車行租了一輛黃包車，每天在大街小巷奔跑。收入比扛貨多，但要繳車租，下雨天還得冒雨拉客。", "effects": {"wealth": 1, "family": -1, "adapt": 1}, "role": "人力車夫"}]}], "card": {"decline": "抬轎、推獨輪車：被人力車搶走生意", "rise": "人力車夫、車行、修車匠", "learn": "新工具一出現，最先受影響的是做同樣工作的人"}, "ep": "第5集｜黃包車來了，要不要轉職？", "hook": "【系統】新職業「人力車夫」已開放。", "review": "人力車傳入上海後迅速普及，抬轎、推獨輪車的工作逐漸被取代。"}, {"year": 1882, "age": 47, "stage": "中年", "title": "電燈亮了", "book": "延伸｜上海的新設施", "bg": "lights", "music": "calm", "scene": ["1882 年，上海的街上亮起了電燈。電報、自來水也陸續出現，新的工廠一家接一家開張。", "點油燈、挑水、送信的工作越來越少；工廠卻在招工，附近工人多了，吃飯、買日用品的人也多了。"], "question": "你的下一步是？", "options": [{"type": 0, "label": "回鄉下種田，不再跟城裡的變化", "result": "你回到鄉下。家人很高興，但收成全靠天，你常常懷念城裡的工錢。", "effects": {"family": 2, "wealth": -1}, "place": "江北鄉下"}, {"type": 1, "label": "開一間小店，賣東西給工人", "branches": [{"if": ["商業"], "result": "你擺過攤，懂得做生意。小店開在工廠旁邊，每天下工時都擠滿了工人。", "effects": {"wealth": 2}, "role": "雜貨店老闆"}, {"result": "你沒做過生意，常算錯帳，貨也進太多。辛苦一年，只賺到一點點。", "effects": {"wealth": -1, "adapt": 1}, "gain": ["商業"], "role": "雜貨店老闆"}]}, {"type": 2, "label": "進新開的機器廠或紡織廠", "branches": [{"if": ["機械"], "result": "你是有經驗的技工，新工廠搶著要你，還讓你帶新來的學徒。", "effects": {"wealth": 2, "fame": 1}, "role": "工廠領班", "fit": 1}, {"result": "你沒有技術，只能做最粗重的雜工，一天工作十幾個小時。收入比較穩定，身體卻越來越差。", "effects": {"wealth": 1, "family": -1}, "gain": ["機械"], "role": "工廠雜工", "forced": true}]}], "card": {"decline": "點燈、挑水、送信的工作", "rise": "電燈、電報、自來水、工廠的工人", "learn": "會機器的技工最搶手，沒有技術的只能做雜工"}, "ep": "第6集｜電燈亮了，舊工作要消失了？", "hook": "【系統】偵測到科技升級：電燈、電報、自來水。", "review": "新設施讓點燈、挑水、送信的工作減少，卻也帶來工廠和商店的新工作。"}, {"year": 1885, "age": 50, "stage": "中年", "title": "孩子要不要上學？", "book": "延伸｜教會學堂", "bg": "school", "music": "calm", "scene": ["你的兒子十歲了。附近的教會學堂免學費，還教英文和算術。", "鄰居說：「讓孩子早點當學徒、賺錢才實在。讀洋書有什麼用？」"], "question": "你怎麼安排孩子？", "options": [{"type": 0, "label": "不上學，早點跟我去做工", "result": "孩子跟著你做工，每天多賺一點錢。可是他和你一樣，一輩子只能出賣力氣。", "effects": {"wealth": 1}, "fit": -1}, {"type": 1, "label": "送去店鋪當學徒", "result": "孩子到布店當學徒，學算帳、招呼客人。雖然辛苦，但學到一技之長。", "effects": {"family": 1}}, {"type": 2, "label": "送進教會學堂讀書", "result": "孩子進了教會學堂，學識字、算術和英文。鄰居笑你讓孩子「吃洋教」，你卻相信讀書能改變他的命運。", "effects": {"fame": -1, "adapt": 1}, "fit": 1, "flags": ["kid_school"]}], "card": {"decline": "不識字的工作：越來越難往上爬", "rise": "會讀寫、會算術、懂外語的職員", "learn": "教會學堂免學費，成為窮人家孩子讀書的新管道"}, "ep": "第7集｜孩子要上學還是去賺錢？", "hook": "【系統】支線任務：下一代的未來。", "review": "教會學堂免學費，讓不少窮人家的孩子有機會讀書、學英文，翻轉家境。"}, {"year": 1890, "age": 55, "stage": "中年", "title": "力氣用完的那天", "book": "延伸｜工人的晚年", "bg": "street", "music": "tense", "mood": "worry", "scene": ["你五十五歲了，腰和膝蓋常常痛，做粗活越來越吃力。工頭開始只找年輕人。", "你得想想，接下來要靠什麼過日子。"], "question": "你怎麼安排晚年？", "options": [{"type": 0, "label": "咬牙繼續做原本的工作", "result": "你繼續撐著做工，可是常常被扣工錢，有一次還受了傷，休息了好幾個月。", "effects": {"wealth": -1, "family": -1}, "fit": -1}, {"type": 1, "label": "讓孩子接班，自己幫忙打雜", "result": "孩子接下你的工作，你在家幫忙。收入少了一些，但一家人互相照顧。", "effects": {"family": 1}}, {"type": 2, "label": "拿出積蓄，轉做小生意", "branches": [{"if": ["商業", "人脈"], "result": "你懂生意、認識的人多，小店很快就有了熟客。晚年不用再出賣力氣，日子過得安穩。", "effects": {"wealth": 2, "family": 1}, "role": "小店老闆", "fit": 1}, {"result": "你不懂做生意，進貨被騙、帳也算不清，積蓄賠掉大半。轉型需要準備，光有勇氣不夠。", "effects": {"wealth": -2}, "fit": -1}]}], "card": {"decline": "只靠力氣的工作：年紀大了就被淘汰", "rise": "有技術的工人、小商人", "learn": "能不能翻身，常常取決於年輕時有沒有學到一技之長"}, "ep": "第8集｜力氣用完的那一天", "hook": "【系統警告】體力持續下降中……", "review": "只靠力氣的工人，年紀大了很容易失業；有技術或小本生意的人，晚年比較有保障。"}], "swot": {"S": "年輕力壯，能吃苦，敢去新地方", "W": "不識字、沒有錢、沒有技術", "O": "上海開港，到處都缺工人", "T": "戰亂、天災，而且力氣總有用完的一天"}}, {"id": "farm", "name": "江南農家女子「秀英」", "short": "農家女子", "sex": "f", "born": "1838 年生於松江的棉農家庭", "intro": ["你睜開眼，手裡握著紡車的把手，耳邊是娘的叮嚀：「專心紡紗！」——這一世，你是松江棉農家的女兒「秀英」。", "【系統提示】開局技能：紡織。警告：這個時代的女性，能走的路很少……那就自己開一條。"], "start": {"wealth": 3, "family": 6, "fame": 1, "adapt": 4}, "skills": ["紡織"], "startRole": "農家女兒", "startPlace": "松江", "looks": {"kid": {"robe": "pink", "prop": "yarn"}, "young": {"robe": "indigo", "apron": true}, "mid": {"robe": "plum", "apron": true}, "old": {"robe": "gray2"}, "oldFinal": {}}, "real": [{"name": "陳啟沅", "years": "1834–1903", "text": "廣東南海人。1873 年在家鄉創辦繼昌隆機器繅絲廠，雇用許多女工。1881 年工廠遭手工絲織業者搗毀，他一度把工廠遷往澳門，後來機器繅絲仍在珠江三角洲普及開來。"}, {"name": "繅絲廠女工", "years": "1870 年代起", "text": "上海、廣東的機器繅絲廠大量雇用女工。她們第一次走出家門、領工資，但工時很長，廠裡又熱又濕，工資常被家人拿走。"}, {"name": "愛爾德賽", "years": "1797–1868", "text": "英國女傳教士。1844 年在寧波開辦女塾，一般認為是中國最早的女子學校。之後上海等口岸也陸續出現教會女學。"}], "ai": "機器取代了手工紡紗，卻也帶來工廠的新工作。清末的女性很少有受教育的機會，她們怎麼抓住新機會？今天 AI 改變工作時，哪些人容易被忽略？你又能怎麼準備？", "events": [{"year": 1850, "age": 12, "stage": "少年", "title": "學女紅", "book": "延伸｜江南的棉紡織業", "bg": "loom", "music": "calm", "scene": ["你十二歲了，娘開始認真教你女紅：紡紗、織布、刺繡。", "哥哥在私塾讀書，每天回家念念有詞。你常偷偷站在旁邊聽，覺得那些字很有趣。"], "question": "你把最多心思花在哪裡？", "options": [{"type": 0, "label": "專心紡紗織布，幫家裡賺錢", "result": "你的紗越紡越細、布越織越密，拿到市集都賣得出去。娘說你是全村最巧的女孩。", "effects": {"wealth": 1}}, {"type": 1, "label": "學刺繡，做精細的繡品", "result": "你跟著鄰居嬸嬸學刺繡，繡出的花鳥像真的一樣，有人專程來訂繡品。", "effects": {"fame": 1}}, {"type": 2, "label": "偷偷跟哥哥學認字", "result": "你每晚讓哥哥教你幾個字，用樹枝在地上練習。爹知道後很生氣：「女孩子識字做什麼？」但你已經認得自己的名字了。", "effects": {"family": -1, "adapt": 1}, "gain": ["識字"], "fit": 1}], "card": {"decline": "暫時還沒有——手紡紗、手織布是農家重要收入", "rise": "江南的棉布：賣到全國各地", "learn": "女孩不能上學，只能在家學女紅，或偷偷學認字"}, "ep": "第1集｜女孩子識字做什麼？", "hook": "【系統】隱藏技能「識字」偵測中……", "review": "清末大多數女孩沒有機會上學，識字的女性非常少。"}, {"year": 1860, "age": 22, "stage": "青年", "title": "戰亂來了", "book": "延伸｜太平天國", "bg": "refuge", "music": "tense", "mood": "worry", "scene": ["你已經嫁到鄰村。1860 年，太平軍和清軍在江南一帶激戰，村子附近燒起大火。", "許多人逃往上海的租界。丈夫說：「我們也走吧！」婆婆卻捨不得田地和房子。"], "question": "全家該怎麼辦？", "options": [{"type": 0, "label": "留在村裡，守住田地和房子", "result": "你們躲在家裡，聽著遠處的槍砲聲。房子保住了，但棉花田被踩壞，存糧也被搶走大半。", "effects": {"wealth": -1}, "role": "農家媳婦"}, {"type": 1, "label": "到遠方的親戚家躲一陣子", "result": "你們走了三天路，住進親戚家。住在別人家很不自在，但全家都平安。", "effects": {"wealth": -1, "family": 1}, "forced": true, "role": "農家媳婦"}, {"type": 2, "label": "全家逃往上海", "result": "你們擠在難民中走進上海租界，在擁擠的小屋住下。你第一次看到冒黑煙的輪船和高大的洋樓。", "effects": {"wealth": -1, "adapt": 2}, "place": "上海", "flags": ["shanghai"], "forced": true, "role": "農家媳婦"}], "card": {"decline": "江南鄉村的紡織生產：因戰亂中斷", "rise": "上海租界：難民帶來大量勞力", "learn": "逃到上海的人，接觸到新的工作和新的學問"}, "ep": "第2集｜戰火逼近，逃還是守？", "hook": "【系統警告】戰亂事件觸發！", "review": "太平天國戰爭期間，江南人口大量死傷或逃往上海，鄉村生產嚴重中斷。"}, {"year": 1866, "age": 28, "stage": "青年", "title": "便宜的洋紗", "book": "課本｜洋貨傾銷", "bg": "loom", "music": "calm", "scene": ["戰亂結束了，市集上卻出現機器紡的「洋紗」，又細又勻，價錢還比你手紡的紗便宜。", "布商對你說：「你手紡的紗，現在沒人要了。不過，用洋紗來織布，倒是還賣得出去。」"], "question": "你怎麼調整？", "options": [{"type": 0, "label": "繼續紡自己的土紗", "result": "你照舊紡紗，但價錢一年比一年低，常常整天紡紗也換不到幾斤米。", "effects": {"wealth": -1}, "fit": -1}, {"type": 1, "label": "買洋紗來織土布", "result": "你改用洋紗織布，織得又快又平整。土布結實耐穿，鄉下人還是愛買，收入慢慢回穩。", "effects": {"wealth": 1, "adapt": 1}, "fit": 1, "role": "織布婦女"}, {"type": 2, "label": "改行養蠶、繅絲", "result": "你學著養蠶、煮繭抽絲。生絲可以賣給收購外銷的商人，價錢比棉紗好得多，但養蠶很費心力。", "effects": {"wealth": 2, "family": -1, "adapt": 1}, "gain": ["繅絲"], "look": {"prop": "cocoon"}, "fit": 1, "role": "養蠶繅絲婦女"}], "card": {"decline": "手紡土紗：被便宜的機器洋紗打擊最大", "rise": "用洋紗織的土布、外銷的生絲", "learn": "洋紗衝擊土紗較大，土布織業則有一部分存續下來", "note": "教學提醒：洋貨的衝擊並不是「一來就讓所有手工業全垮」，要看是哪一種產品。"}, "ep": "第3集｜機器紗來了，手藝要失業？", "hook": "【系統】偵測到「洋紗」湧入市場！", "review": "洋紗衝擊手紡土紗最大；許多農家改用洋紗織土布，土布業因此存活了一部分。"}, {"year": 1874, "age": 36, "stage": "青年", "title": "機器繅絲廠", "book": "延伸｜機器繅絲業", "bg": "silkmill", "music": "calm", "scene": ["生絲外銷越來越興盛，上海出現了用蒸汽機的「機器繅絲廠」，招收大批女工。", "工廠一天要做十幾個小時，但每個月都能領到工錢。村裡的女人議論紛紛：「女人怎麼可以到外面到外面工作、被人看見？」"], "question": "你要不要去絲廠做工？", "options": [{"type": 0, "label": "留在家裡，照顧家人和田地", "result": "你留在家裡操持家務、照顧孩子。家裡平平安安，但收入沒有增加。", "effects": {"family": 1}}, {"type": 1, "label": "在家自己繅絲，賣給絲行", "branches": [{"if": ["繅絲"], "result": "你早就會繅絲，在家做也能賺錢，還能顧到孩子。", "effects": {"wealth": 1, "family": 1}}, {"result": "你從頭學起，在家煮繭抽絲。產量不多，但多了一份收入。", "effects": {"wealth": 1}, "gain": ["繅絲"], "look": {"prop": "cocoon"}}]}, {"type": 2, "label": "進絲廠當女工", "branches": [{"if": ["shanghai"], "result": "你進了絲廠，站在熱水盆前抽絲。工作又熱又累，但你第一次拿到自己賺的工錢。", "effects": {"wealth": 2, "family": -1, "adapt": 1}, "gain": ["機械"], "role": "繅絲廠女工", "look": {"apron": true, "prop": "cocoon"}, "fit": 1}, {"result": "你離開家，獨自到上海的絲廠做工，每月把工錢寄回家。想孩子的時候，只能在夜裡偷偷掉眼淚。", "effects": {"wealth": 2, "family": -2, "adapt": 2}, "gain": ["機械"], "role": "繅絲廠女工", "place": "上海", "look": {"apron": true, "prop": "cocoon"}, "fit": 1}]}], "card": {"decline": "農家手工繅絲：品質比不上機器絲", "rise": "繅絲廠女工：女性第一次大量進入工廠", "learn": "在工廠裡學會操作機器"}, "ep": "第4集｜女人也能進工廠？", "hook": "【系統】新職業「繅絲女工」已開放。", "review": "機器繅絲廠大量雇用女工，女性第一次大規模走出家門、領取工資。"}, {"year": 1880, "age": 42, "stage": "中年", "title": "工錢給誰？", "book": "延伸｜女工與家庭", "bg": "village", "music": "calm", "scene": ["這幾年你靠紡織和繅絲，賺的錢比丈夫還多。", "婆婆說：「按規矩，媳婦賺的錢都要交給婆家。」你卻想存一點錢，將來讓孩子讀書。"], "question": "你怎麼處理自己賺的錢？", "options": [{"type": 0, "label": "照規矩，全部交給婆家", "result": "你把錢都交給婆婆。家裡一片和氣，但你想做的事，一件也做不了。", "effects": {"family": 1, "fame": 1}}, {"type": 1, "label": "和家人好好商量怎麼分配", "result": "你和丈夫、婆婆談了好幾個晚上，最後說好：一半交給家裡，一半由你存著。", "effects": {"wealth": 1, "adapt": 1}}, {"type": 2, "label": "堅持自己存錢，繼續在外做工", "result": "你堅持自己存錢。婆婆氣得好幾天不跟你說話，鄰居也在背後議論，但你的存款越來越多。", "effects": {"wealth": 2, "family": -1, "fame": -1}, "fit": 1}], "card": {"decline": "「女人不能有自己的錢」的老規矩，開始鬆動", "rise": "能自己賺錢的女性", "learn": "工作讓女性有了一點自己做決定的能力"}, "ep": "第5集｜我賺的錢，誰說了算？", "hook": "內心OS：為什麼我賺的錢，要全部交出去？", "review": "女工的工資常被家人拿走；但有了收入，女性在家中的發言權也慢慢增加。"}, {"year": 1884, "age": 46, "stage": "中年", "title": "女兒要讀書嗎？", "book": "延伸｜教會女學", "bg": "school", "music": "calm", "scene": ["城裡有一間教會開的女學堂，教女孩識字、算術，有的還教英文，而且不收學費。", "你的女兒十歲了。親戚說：「女孩子讀什麼書？還不是要嫁人！」"], "question": "你怎麼安排女兒？", "options": [{"type": 0, "label": "留在家裡學女紅，準備嫁人", "result": "女兒在家跟你學紡織和刺繡。她手很巧，但和你小時候一樣，不識字。", "effects": {"family": 1}}, {"type": 1, "label": "先學一門手藝，以後再說", "result": "你讓女兒去學裁縫，學一門能養活自己的手藝。", "effects": {"adapt": 1}}, {"type": 2, "label": "送女兒進教會女學堂", "result": "女兒進了女學堂，回家會念書給你聽，還教你算數。親戚都說你「瘋了」，你卻覺得很驕傲。", "effects": {"fame": -1, "adapt": 1}, "fit": 1, "flags": ["kid_school"]}], "card": {"decline": "「女子無才便是德」的觀念受到挑戰", "rise": "受過教育的女性：可以當老師、記帳員", "learn": "教會女學：1844 年寧波首開，之後上海等口岸陸續出現"}, "ep": "第6集｜女兒要讀書嗎？", "hook": "【系統】新地圖「教會女學」已開放。", "review": "教會女學培養出中國第一批受過新式教育的女性，有些人後來成為老師或醫生。"}, {"year": 1888, "age": 50, "stage": "中年", "title": "絲價大跌", "book": "延伸｜國際生絲競爭", "bg": "silkmill", "music": "tense", "mood": "worry", "scene": ["日本、義大利的生絲越來越多，國際絲價大跌。上海的絲廠接連減工，有的乾脆關門。", "你所在的地方也受到影響，收入一下子少了一大截。"], "question": "你要怎麼撐過去？", "options": [{"type": 0, "label": "回鄉下種田", "result": "你回到鄉下種棉花。日子清苦，但不用再看工廠臉色。", "effects": {"family": 2, "wealth": -1}, "place": "松江"}, {"type": 1, "label": "做點小買賣維生", "result": "你在市集擺攤賣布和繡品，生意時好時壞，總算撐了下來。", "effects": {"wealth": 1}, "gain": ["商業"]}, {"type": 2, "label": "換到其他工廠做工", "branches": [{"if": ["識字", "機械"], "result": "你懂機器、又識字，被另一家工廠請去當女工頭，帶領新來的女工。", "effects": {"wealth": 2, "fame": 1}, "role": "女工頭", "fit": 1}, {"result": "你換到另一家工廠，從最辛苦的工作做起。工錢比以前少，但總算有工作。", "effects": {"family": -1}, "role": "紡織廠女工", "forced": true}]}], "card": {"decline": "依賴外銷的繅絲廠：受國際價格影響很大", "rise": "會管理、會識字的工頭", "learn": "全球市場一波動，遠方的女工也跟著受影響"}, "ep": "第7集｜絲價崩盤！", "hook": "【系統警告】國際市場劇烈波動！", "review": "日本、義大利的生絲競爭越來越強，中國生絲出口受到打擊，許多絲廠減工或倒閉。"}, {"year": 1892, "age": 54, "stage": "中年", "title": "把什麼傳給下一代？", "book": "延伸｜技能傳承", "bg": "loom", "music": "calm", "scene": ["你的頭髮開始花白了。回頭看，這輩子從紡紗、繅絲到進工廠，換了好多次工作。", "孫女坐在你身邊，好奇地看你織布。"], "question": "你最想傳給下一代什麼？", "options": [{"type": 0, "label": "把織布和刺繡的手藝教給孫女", "result": "你手把手教孫女織布。她學得很快，你看著她，好像看見小時候的自己。", "effects": {"family": 1}}, {"type": 1, "label": "讓孫子去讀書，孫女在家幫忙", "result": "家裡的錢只夠讓孫子讀書。孫女在家幫忙，偶爾偷看哥哥的書——就像你當年一樣。", "effects": {"fame": 1}}, {"type": 2, "label": "讓孫女也去讀書、學算術", "branches": [{"if": ["kid_school"], "result": "你的女兒已經在女學堂當老師，孫女也跟著去讀書。你們家出了兩代讀書的女人。", "effects": {"fame": 2, "adapt": 1}, "fit": 1}, {"result": "你拿出積蓄，讓孫女去讀書。她會是家裡第一個識字的女孩。", "effects": {"wealth": -1, "adapt": 1}, "fit": 1}]}], "card": {"decline": "只能靠手藝謀生的女性", "rise": "受過教育的新一代女性", "learn": "下一代的學習機會，往往取決於上一代的決定"}, "ep": "第8集｜要把什麼留給下一代？", "hook": "【系統】最終任務：傳承。", "review": "清末民初，女子教育逐漸普及；上一代的選擇，常常決定下一代女性的機會。"}], "swot": {"S": "手很巧，紡紗織布是好手藝", "W": "女孩不能上學，也不能隨便出門", "O": "生絲外銷興盛，工廠開始招女工", "T": "便宜的機器洋紗，讓手紡紗賣不出去"}}, {"id": "clerk", "name": "洋務文書「周明遠」", "short": "洋務文書", "born": "1838 年生於湖南的貧寒讀書人家庭", "intro": ["你睜開眼，桌上是一盞快沒油的燈，旁邊堆著借來的書——這一世，你是湖南窮書生「周明遠」。", "【系統提示】開局技能：識字、一手好字。缺點：沒錢考試。這一局要靠腦袋翻身。"], "start": {"wealth": 3, "family": 6, "fame": 2, "adapt": 5}, "skills": ["識字"], "startRole": "寒門書生", "startPlace": "湖南", "looks": {"kid": {"robe": "gray2", "queueFront": true}, "young": {"robe": "gray2", "hat": "skull", "prop": "brush"}, "mid": {"robe": "olive", "hat": "skull", "magua": true}, "old": {"robe": "olive", "hat": "skull", "magua": true}, "oldFinal": {"prop": "cane"}}, "real": [{"name": "薛福成", "years": "1838–1894", "text": "和你同一年出生。他進入曾國藩的幕府，後來成為李鴻章的重要幕僚，又出使英、法、義、比四國，主張發展工商業。"}, {"name": "馬建忠", "years": "1845–1900", "text": "留學法國，回國後在李鴻章幕府辦理洋務，參與招商局的經營，還寫了中國第一本系統的文法書《馬氏文通》。"}, {"name": "盛宣懷", "years": "1844–1916", "text": "李鴻章的幕僚，先後主持輪船招商局、電報局等事業，是「官督商辦」的代表人物，也因此受到不少批評。"}], "ai": "抄寫公文、整理檔案、計算帳目，這些工作現在正被電腦和 AI 自動化。像周明遠這樣在官府和新事業之間「搭橋」的人，要怎麼讓自己不被取代？", "events": [{"year": 1852, "age": 14, "stage": "少年", "title": "讀不起的書", "book": "延伸｜清代的科舉之路", "bg": "study", "music": "calm", "scene": ["你十四歲了，已經讀完《四書》。老師說你是讀書的料，可是家裡實在供不起你再讀好幾年。", "鎮上的衙門缺人抄寫文書，米行也在找會算帳的學徒。"], "question": "你怎麼打算？", "options": [{"type": 0, "label": "繼續苦讀，準備科舉", "result": "你白天幫忙農事，晚上借鄰居的燈光讀書。家裡更窮了，但父親為你驕傲。", "effects": {"fame": 1, "wealth": -1, "family": 1}}, {"type": 1, "label": "到衙門學抄寫文書", "result": "你每天在衙門抄寫公文，練出一手工整的小楷，也慢慢弄懂官府辦事的規矩。", "effects": {"wealth": 1}, "look": {"prop": "brush"}}, {"type": 2, "label": "到米行學算帳", "result": "你在米行學打算盤、記帳。讀書人去當學徒，親戚覺得可惜，但你算帳又快又準。", "effects": {"wealth": 1, "adapt": 1}, "gain": ["算學"], "fit": 1}], "card": {"decline": "暫時沒有——但窮人家的孩子很難一路考上去", "rise": "衙門書吏、商號帳房", "learn": "讀不起書的人，靠當學徒、當書吏學本事"}, "ep": "第1集｜沒錢讀書，怎麼翻身？", "hook": "【系統】請選擇第一條技能分支。", "review": "許多讀不起書的讀書人，靠當書吏、帳房學到實務本事，後來在洋務機構找到出路。"}, {"year": 1861, "age": 23, "stage": "青年", "title": "安慶的軍械所", "book": "課本｜自強運動", "bg": "yamen", "music": "calm", "scene": ["太平天國戰爭打得正激烈。1861 年，曾國藩的湘軍攻下安慶，設立「內軍械所」，試著自己製造槍砲和輪船。", "曾國藩的幕府廣招人才：會寫公文的、懂算學的、懂機器的都要。同鄉寫信給你：「快來安慶！」"], "question": "你的選擇是？", "options": [{"type": 0, "label": "留在家鄉教書", "result": "你留在村裡開私塾。收入微薄，但能照顧父母。", "effects": {"family": 1}}, {"type": 1, "label": "加入湘軍，當軍中文書", "result": "你跟著軍隊南征北討，替將領寫文書、記軍功。戰場很危險，但你認識了許多湘軍將領。", "effects": {"fame": 1, "family": -1}, "gain": ["人脈"], "role": "湘軍文書"}, {"type": 2, "label": "進幕府，到軍械所幫忙", "result": "你進入幕府，負責軍械所的文書和帳目。你第一次看到中國人自己試著造蒸汽機，覺得非常震撼。", "effects": {"fame": 1, "adapt": 1}, "gain": ["人脈"], "role": "幕府文書", "fit": 1}], "card": {"decline": "只靠科舉求官的讀書人：戰亂中機會變少", "rise": "幕府幕僚：曾國藩、李鴻章廣招人才", "learn": "安慶內軍械所（1861）：中國自製槍砲輪船的開始"}, "ep": "第2集｜大人物曾國藩在招人", "hook": "【系統】隱藏 NPC「曾國藩幕府」出現。", "review": "安慶內軍械所是中國自製槍砲輪船的開端，曾國藩的幕府也培養了大批洋務人才。"}, {"year": 1865, "age": 27, "stage": "青年", "title": "製造局的新工作", "book": "課本｜自強運動", "bg": "factory", "music": "calm", "scene": ["1865 年，李鴻章在上海設立江南製造局，在南京設立金陵機器局。你被派去處理局裡的公文。", "你發現，懂公文的人很多，但懂機器、懂算學、能看懂洋人圖紙的人很少，薪水也高得多。"], "question": "你要怎麼發展？", "options": [{"type": 0, "label": "做好公文的本分就好", "result": "你把公文寫得又快又好，上司很滿意。只是機器的事，你一點也不懂。", "effects": {"fame": 1}}, {"type": 1, "label": "下班後自學西方算學", "result": "你跟局裡的翻譯借書，晚上自學代數和幾何。很難，但你一點一點看懂了。", "effects": {"adapt": 1}, "gain": ["算學"]}, {"type": 2, "label": "申請轉當技術助手", "requires": ["算學"], "lockedHint": "技術工作需要先懂「算學」。", "result": "你轉去協助洋匠和工程師，替他們翻譯、計算尺寸、監督工人。你成了局裡少數「懂文也懂機器」的人，只是常常加班到深夜。", "effects": {"wealth": 1, "adapt": 2, "family": -1}, "gain": ["機械"], "role": "製造局技術助手", "fit": 1}], "card": {"decline": "只會寫八股文、不懂實務的文人", "rise": "懂算學、懂機器的技術人才", "learn": "江南製造局翻譯館（1868）開始大量翻譯西方科技書"}, "ep": "第3集｜只會寫公文，夠嗎？", "hook": "【系統】技能「算學」可點亮。", "review": "江南製造局翻譯館翻譯了大量西方科技書，懂算學和機器的人才非常搶手。"}, {"year": 1867, "age": 29, "stage": "青年", "title": "福州船政局", "book": "課本｜自強運動", "bg": "shipyard", "music": "calm", "scene": ["左宗棠在福州設立船政局，聘請法國工程師造船，還開辦船政學堂，培養造船和駕駛人才。", "船政局缺懂公文、又能和法國人溝通的人。有人推薦了你。"], "question": "你要不要去福州？", "options": [{"type": 0, "label": "留在原本的幕府", "result": "你留在熟悉的地方。上司信任你，工作也穩定。", "effects": {"family": 1}}, {"type": 1, "label": "先打聽看看再說", "result": "你寫信問了在福州的朋友，聽說那裡的工程進展很快。你把這件事記在心上。", "effects": {"adapt": 1}}, {"type": 2, "label": "南下福州，到船政局任職", "branches": [{"if": ["算學", "機械"], "result": "你到船政局協助管理工程，跟法國工程師學法文和造船管理。你看著第一艘輪船下水，激動得說不出話。", "effects": {"wealth": 1, "fame": 1, "adapt": 1}, "gain": ["外語", "機械"], "role": "船政局委員", "place": "福州", "fit": 1}, {"result": "你到了福州，卻因為不懂算學和機器，只能抄寫文書。遠離家人，收入也沒增加多少。", "effects": {"family": -1, "adapt": 1}, "role": "船政局文案", "place": "福州"}]}], "card": {"decline": "傳統木造帆船的造船工匠", "rise": "輪船製造、駕駛人才", "learn": "福州船政學堂（1866–67）：學法文造船、英文駕駛"}, "ep": "第4集｜南下福州，看輪船下水", "hook": "【系統】新地圖「福州船政局」已開放。", "review": "福州船政局造出了中國第一批近代輪船，船政學堂也培養出嚴復等人才。"}, {"year": 1873, "age": 35, "stage": "中年", "title": "官督商辦", "book": "課本｜自強運動", "bg": "steamer", "music": "calm", "scene": ["1872 年，李鴻章創辦輪船招商局，採用「官督商辦」：官府監督，商人出錢經營。", "招商局需要會算帳、懂公文的人。但也有人提醒你：「官府插手太多，生意不見得做得好。」"], "question": "你的決定是？", "options": [{"type": 0, "label": "留在原職，不碰生意", "result": "你留在原職。官府的工作穩定，但薪水不高。", "effects": {"family": 1}}, {"type": 1, "label": "和朋友合開一間小商號", "result": "你和朋友合資開了一間小商號。生意有賺有賠，你學到了做生意的辛苦。", "effects": {"wealth": 1}, "gain": ["商業"]}, {"type": 2, "label": "轉到招商局當帳房", "requires": ["算學"], "lockedHint": "招商局帳房需要會「算學」。", "result": "你進了招商局管帳。你看到官督商辦的好處：有官府撐腰，能和外國輪船公司競爭；也看到壞處：官員常常插手、安插親友。", "effects": {"wealth": 2, "adapt": 1, "fame": -1}, "gain": ["商業"], "role": "招商局帳房", "fit": 1}], "card": {"decline": "舊式漕運：用木船運糧的方式", "rise": "新式企業：輪船、礦業、紡織", "learn": "官督商辦：有官府支持，也受官府干預"}, "ep": "第5集｜官督商辦：是靠山還是枷鎖？", "hook": "內心OS：有官方撐腰的公司……聽起來好像很穩？", "review": "官督商辦讓新企業有官府支持，但官員干預、安插親信，也讓經營效率打了折扣。"}, {"year": 1880, "age": 42, "stage": "中年", "title": "電報來了", "book": "課本｜自強運動", "bg": "telegraph", "music": "calm", "scene": ["1880 年，天津設立電報總局和電報學堂；隔年，天津到上海的電報線完工。從前要走好幾天的公文，現在幾分鐘就能送到。", "你的老同事卻說：「電線會破壞風水！這種洋玩意，我們不用學。」"], "question": "你怎麼看電報？", "options": [{"type": 0, "label": "和老同事一起反對", "result": "你和老同事聯名上書，說電報破壞風水。不久，大家都用電報傳消息，你的公文反而顯得太慢。", "effects": {"fame": 1}, "fit": -1}, {"type": 1, "label": "先看看別人用得怎麼樣", "result": "你沒有反對，也沒有去學，只是看著電報一天天普及。", "effects": {}}, {"type": 2, "label": "去學電報", "branches": [{"if": ["算學", "機械"], "result": "你很快學會了收發電報，被派到電報局管理一條線路。你成了大家眼中的「新式人才」。", "effects": {"wealth": 1, "fame": 1, "adapt": 1}, "gain": ["機械"], "role": "電報局委員", "fit": 1}, {"result": "你從最基本的電碼學起，記得頭昏腦脹。年紀大了學得慢，但總算學會了。", "effects": {"adapt": 2}, "gain": ["機械"]}]}], "card": {"decline": "驛站和送公文的驛差", "rise": "電報員、電報局管理人員", "learn": "天津電報學堂（1880）：學收發電報與電學"}, "ep": "第6集｜電報會破壞風水？", "hook": "【系統】科技升級：電報。", "review": "電報很快就普及全國，當初反對的人反而被時代拋在後頭。"}, {"year": 1881, "age": 43, "stage": "中年", "title": "鐵路之爭", "book": "課本｜自強運動", "bg": "railway", "music": "tense", "scene": ["1881 年，為了運開平煤礦的煤，唐山到胥各莊的鐵路完工了。", "可是朝中有人反對：火車噪音會驚動皇陵，還會搶走挑夫和車夫的生計。據說一開始，這條鐵路甚至用騾馬來拉車廂。你的上司要你寫一篇意見書。"], "question": "你的意見書怎麼寫？", "options": [{"type": 0, "label": "支持反對派：不該修鐵路", "result": "你的意見書很受保守派大臣欣賞。但你心裡明白，鐵路遲早會來。", "effects": {"fame": 1}, "fit": -1}, {"type": 1, "label": "寫得含糊一點，誰也不得罪", "result": "你的意見書沒有明確表態，上司看了沒說什麼。", "effects": {}}, {"type": 2, "label": "支持修鐵路：運輸是自強的基礎", "result": "你在意見書裡算出鐵路能省下多少運費。保守派批評你「崇拜洋人」，但主持洋務的大臣記住了你。", "effects": {"fame": -1, "adapt": 1}, "gain": ["人脈"], "fit": 1}], "card": {"decline": "挑夫、車夫：擔心被鐵路搶走生計", "rise": "鐵路工程、運輸、礦業", "learn": "新科技常引起爭論：支持、反對、觀望的人都有"}, "ep": "第7集｜鐵路之爭，你怎麼寫？", "hook": "【系統】辯論任務：鐵路該不該修？", "review": "唐胥鐵路常被稱為中國自己修建的第一條實用鐵路，後來逐步向外延伸。"}, {"year": 1886, "age": 48, "stage": "中年", "title": "海軍衙門", "book": "課本｜自強運動（北洋艦隊）", "bg": "shipyard", "music": "calm", "scene": ["1885 年，朝廷設立海軍衙門，統籌海軍事務；北洋艦隊正在擴建，1888 年正式成軍。", "海軍衙門需要熟悉洋務公文的人。你已經四十八歲，這可能是你最後一次轉換跑道。"], "question": "你的最後一步是？", "options": [{"type": 0, "label": "告老還鄉", "result": "你辭官回到湖南，蓋了一間小屋，教孫子讀書寫字。", "effects": {"family": 2}, "place": "湖南"}, {"type": 1, "label": "留在現在的崗位", "result": "你留在原職，繼續做熟悉的工作，直到退休。", "effects": {"wealth": 1}}, {"type": 2, "label": "轉到海軍衙門任職", "requires": ["人脈"], "lockedHint": "海軍衙門只用「有洋務人脈」的人。", "result": "你進了海軍衙門，負責和各國往來的文書。你經手北洋艦隊購艦的公文，覺得國家終於有了像樣的海軍。", "effects": {"fame": 2, "wealth": 1, "family": -1}, "role": "海軍衙門文案", "fit": 1}], "card": {"decline": "舊式水師：木造戰船過時了", "rise": "新式海軍：軍官、技師、文案", "learn": "天津水師學堂、船政學堂培養海軍人才", "note": "1894 年甲午戰爭，北洋艦隊全軍覆沒——那是下一章的故事。"}, "ep": "第8集｜最後一次轉職", "hook": "【系統】最終關卡：海軍衙門。", "review": "北洋艦隊 1888 年成軍，卻在 1894 年甲午戰爭中全軍覆沒，自強運動的成效受到質疑。"}], "swot": {"S": "字寫得好、會寫公文，而且肯學", "W": "家裡窮，沒錢一路考科舉", "O": "洋務大臣廣招人才，新機構很缺人", "T": "守舊派反對新事物，新事業也可能失敗"}}, {"id": "tea", "name": "臺灣茶工「水生」", "short": "臺灣茶工", "born": "1850 年生於艋舺附近的移民家庭", "intro": ["你睜開眼，耳邊是淡水河的水聲和碼頭工人的吆喝——這一世，你是艋舺移民家庭的孩子「水生」。", "【系統提示】開局資源：普通。地圖特色：海島、港口、山坡。系統偵測到——大批洋船正在靠近。"], "start": {"wealth": 4, "family": 6, "fame": 2, "adapt": 5}, "skills": [], "startRole": "移民之子", "startPlace": "艋舺", "looks": {"kid": {"robe": "blue", "poor": true, "queueFront": true}, "young": {"robe": "blue", "hat": "straw", "prop": "tea"}, "mid": {"robe": "teal", "hat": "skull", "magua": true}, "old": {"robe": "teal", "hat": "skull", "magua": true}, "oldFinal": {"prop": "cane"}}, "real": [{"name": "陶德", "years": "1838–1907", "text": "英國商人。他看出臺灣北部適合種茶，貸款給農民種植，並在艋舺設廠精製茶葉。1869 年把臺灣烏龍茶運到紐約，打響「Formosa Oolong」的名號。"}, {"name": "李春生", "years": "1838–1924", "text": "福建廈門人，會說英語，來臺擔任寶順洋行的買辦，協助推廣茶葉。後來在大稻埕自己經營茶業，成為臺灣北部的富商。"}, {"name": "劉銘傳", "years": "1836–1896", "text": "臺灣建省後的第一任巡撫。他推動鐵路、電報、郵政和西學堂，也重新丈量土地、整頓稅收，讓不少人不滿。"}], "ai": "臺灣茶曾因國際競爭賣不出去，又靠改製包種茶找到新市場。今天的網路平台和 AI 讓競爭來自全世界，一個地方產業、一個人，要怎麼找到別人取代不了的位置？", "events": [{"year": 1862, "age": 12, "stage": "少年", "title": "淡水開港", "book": "課本｜天津條約、臺灣開港", "bg": "tamsui", "music": "calm", "scene": ["依照天津條約，臺灣開放通商口岸。1862 年，淡水（滬尾）正式設立海關，外國商船和洋行陸續來到北臺灣。", "碼頭上出現了說著聽不懂語言的洋人。你家隔壁的阿伯說：「現在到碼頭做事，比種田好賺！」"], "question": "你想學什麼？", "options": [{"type": 0, "label": "留在家裡幫忙種田", "result": "你每天下田，跟著父親學種稻。日子單純，家人也都在身邊。", "effects": {"family": 1}}, {"type": 1, "label": "到艋舺碼頭的商行當學徒", "result": "你在商行搬貨、記帳，學會怎麼和船家、商人打交道。", "effects": {"wealth": 1}, "gain": ["商業"]}, {"type": 2, "label": "跟著洋行的通事學外語", "result": "你常在洋行附近幫忙跑腿，跟通事學了不少英語。附近的人笑你「學番話」，但洋人開始叫得出你的名字。", "effects": {"adapt": 1, "fame": -1}, "gain": ["外語"], "fit": 1}], "card": {"decline": "只靠帆船往來大陸的舊式郊商", "rise": "洋行、通事、碼頭搬運", "learn": "開港後，在洋行附近工作就是學外語的機會"}, "ep": "第1集｜開港了！洋人來了", "hook": "【系統】新地圖「淡水港」已開放。", "review": "淡水開港後，洋行陸續設立，懂外語的通事成了吃香的工作。"}, {"year": 1866, "age": 16, "stage": "青年", "title": "洋行來借錢種茶", "book": "課本｜臺灣開港後的茶葉", "bg": "teahill", "music": "calm", "scene": ["英國商人陶德發現臺灣北部的山坡很適合種茶。他借錢給農民買茶苗，答應收成後收購茶葉。", "父親猶豫：「種稻子穩當，種茶要好幾年才有收成，萬一洋人不買了怎麼辦？」"], "question": "你家要不要改種茶？", "options": [{"type": 0, "label": "繼續種稻，不冒險", "result": "你們繼續種稻。收成穩定，但看著鄰居的茶園一年年擴大，心裡有點羨慕。", "effects": {"family": 1}}, {"type": 1, "label": "先種一小塊試試看", "result": "你們在後山種了一小片茶樹。等了三年，第一次採茶時，全家都很興奮。", "effects": {"wealth": 1, "adapt": 1}, "gain": ["製茶"]}, {"type": 2, "label": "向洋行借錢，大片改種茶", "result": "你們借錢買茶苗，把山坡都種滿了茶。頭幾年沒有收入，日子很緊，但茶樹一年比一年茂盛。", "effects": {"wealth": -1, "adapt": 1}, "gain": ["製茶"], "role": "茶農", "look": {"prop": "tea"}, "fit": 1}], "card": {"decline": "北臺灣部分稻田與雜糧", "rise": "茶農、採茶工、茶葉精製", "learn": "洋行請福建的茶師來臺，教農民製茶"}, "ep": "第2集｜種稻還是種茶？", "hook": "【系統】新道具「茶苗」可領取。", "review": "陶德貸款給農民種茶，北臺灣山坡陸續改種茶樹，茶業很快成為北部最重要的產業。"}, {"year": 1869, "age": 19, "stage": "青年", "title": "茶香飄到紐約", "book": "課本｜臺灣茶外銷", "bg": "teashop", "music": "calm", "scene": ["1869 年，臺灣烏龍茶第一次直接運到美國紐約，大受歡迎。大稻埕的茶行一間接一間開張。", "茶行需要大量茶工，洋行需要懂外語的通事，也有人籌錢自己開茶行。"], "question": "你要在茶業做什麼？", "options": [{"type": 0, "label": "進茶行當茶工", "result": "你在茶行焙茶、揀茶，一季做下來手都是茶香。工作辛苦，但收入穩定。", "effects": {"wealth": 1}, "gain": ["製茶"], "role": "茶工"}, {"type": 1, "label": "到洋行當通事", "requires": ["外語"], "lockedHint": "洋行的通事需要「會外語」。", "result": "你成了洋行的通事，替洋人和茶商談價錢。你兩邊都認識，消息比誰都靈通。", "effects": {"wealth": 2, "adapt": 1}, "gain": ["人脈"], "role": "洋行通事"}, {"type": 2, "label": "和朋友合資開茶行", "branches": [{"if": ["商業", "製茶"], "result": "你懂製茶也懂生意，茶行開張不到一年就站穩腳步，還接到洋行的大訂單。", "effects": {"wealth": 3, "fame": 1}, "role": "茶行老闆", "fit": 1}, {"result": "你不懂製茶也不會做生意，茶葉品質不穩，常被洋行退貨。茶行勉強撐著。", "effects": {"wealth": -1, "adapt": 1}, "gain": ["商業"], "role": "茶行老闆"}]}], "card": {"decline": "糖：北部不適合種甘蔗，茶葉取代了糖的地位", "rise": "茶行、茶工、揀茶女工、洋行通事", "learn": "大稻埕的茶行成了學製茶、學做生意的地方"}, "ep": "第3集｜茶香飄到紐約", "hook": "【系統】稀有事件：臺灣茶登上國際市場！", "review": "1869 年臺灣烏龍茶直接運往紐約，大稻埕因此繁榮起來，成為茶商聚集的地方。"}, {"year": 1873, "age": 23, "stage": "青年", "title": "烏龍茶賣不出去", "book": "延伸｜包種茶的由來", "bg": "teashop", "music": "tense", "mood": "worry", "scene": ["國際茶價下跌，臺灣烏龍茶賣不出去。1873 年，幾家大洋行乾脆停止收購，倉庫裡堆滿了茶葉。", "有些茶商想到辦法：把茶葉運到福州，加上花香改製成「包種茶」，賣到南洋。"], "question": "你怎麼撐過這次危機？", "options": [{"type": 0, "label": "和洋行簽約，用低價先賣出", "result": "你答應了洋行壓得很低的價錢。至少茶葉賣掉了，但這一年幾乎沒賺錢。", "effects": {"wealth": -1, "family": 1}}, {"type": 1, "label": "和其他茶農合股，一起分攤風險", "result": "你和幾戶茶農合股，一起找買家、一起負擔損失。大家互相幫忙，撐過了這一年。", "effects": {"family": 1}, "gain": ["人脈"]}, {"type": 2, "label": "自己找買家，改製包種茶", "requires": ["商業", "人脈"], "lockedHint": "自己找買家需要「懂商業」或「有人脈」。", "result": "你把茶葉運到福州加上花香重新製作，賣到南洋的華人市場。你常常在外奔波，很少在家，但找到了一條新出路。", "effects": {"wealth": 2, "adapt": 1, "family": -1}, "role": "茶商", "flags": ["pouchong"], "fit": 1}], "card": {"decline": "只依賴洋行收購的烏龍茶", "rise": "包種茶：銷往南洋的新產品", "learn": "市場一變，就要學新的製法、找新的買家"}, "ep": "第4集｜茶賣不出去了！", "hook": "【系統警告】市場崩盤！", "review": "烏龍茶滯銷後，茶商改製包種茶、開拓南洋市場，讓臺灣茶業找到新出路。"}, {"year": 1884, "age": 34, "stage": "中年", "title": "法軍來了", "book": "延伸｜清法戰爭", "bg": "tamsuiwar", "music": "tense", "mood": "worry", "scene": ["清法戰爭爆發。1884 年，法軍攻打基隆，又進攻淡水，後來還封鎖臺灣的港口。", "茶葉運不出去，碼頭一片冷清。團練正在招募人手守淡水。"], "question": "戰爭期間，你怎麼做？", "options": [{"type": 0, "label": "帶家人到山裡避難", "result": "你帶著家人躲進山裡。全家平安，但茶園沒人照顧，收成損失不少。", "effects": {"family": 2, "wealth": -1}}, {"type": 1, "label": "把茶葉存起來，等封鎖解除", "result": "你把茶葉存在倉庫裡。封鎖拖了好幾個月，一部分茶葉受潮發霉，損失慘重。", "effects": {"wealth": -2}, "fit": -1}, {"type": 2, "label": "加入團練，保衛淡水", "result": "你跟著團練在海邊挖壕溝、守陣地。法軍登陸淡水時被擊退，你成了鄉里口中的英雄，卻也在戰鬥中受了傷。", "effects": {"fame": 2, "family": -1}, "gain": ["人脈"]}], "card": {"decline": "封鎖期間：所有出口貿易停擺", "rise": "防務工事、軍需運輸", "learn": "戰爭讓清廷更重視臺灣，隔年臺灣建省"}, "ep": "第5集｜法軍來襲", "hook": "【系統警告】戰爭事件：清法戰爭！", "review": "法軍進攻淡水時被擊退；清法戰爭也讓清廷更重視臺灣，隔年臺灣建省。"}, {"year": 1886, "age": 36, "stage": "中年", "title": "建省與清賦", "book": "課本｜臺灣建省", "bg": "yamen", "music": "calm", "scene": ["1885 年臺灣建省，劉銘傳擔任第一任巡撫。為了籌錢建設，他開始重新丈量土地、整頓稅收，稱為「清賦」。", "很多人以前少報土地，現在要多繳稅了，地方上議論紛紛。"], "question": "你怎麼面對新的稅制？", "options": [{"type": 0, "label": "和鄉親一起抗議新稅", "result": "你和鄉親到衙門請願，抗議稅太重。官府最後減了一點，但你也被官府記上了名字。", "effects": {"fame": 1, "wealth": 1}, "fit": -1}, {"type": 1, "label": "想辦法少報一點，能省則省", "result": "你少報了一塊茶園。省下一點稅，但心裡總是不踏實，怕哪天被查到。", "effects": {"wealth": 1, "fame": -1}}, {"type": 2, "label": "照實申報，配合新制度", "result": "你照實申報，多繳了稅。但你的土地從此有了清楚的證明文件，向錢莊借錢也方便多了。", "effects": {"wealth": -1, "fame": 1, "adapt": 1}, "fit": 1}], "card": {"decline": "靠隱瞞土地少繳稅的做法", "rise": "地方建設：鐵路、電報、郵政", "learn": "新制度推行時，有人配合、有人反對"}, "ep": "第6集｜新巡撫要查稅了", "hook": "【系統】新規則上線：清賦。", "review": "劉銘傳的清賦增加了稅收、支持建設，但稅負加重也引起民間不滿。"}, {"year": 1888, "age": 38, "stage": "中年", "title": "鐵路與電報", "book": "課本｜臺灣的自強建設", "bg": "telegraph", "music": "calm", "scene": ["劉銘傳在臺灣架設電報、開辦郵政，也開始修築鐵路，還在臺北設立「西學堂」，教英文、法文和算學。", "電報局和鐵路局都在招人，你的兒子也到了讀書的年紀。"], "question": "面對這些新建設，你怎麼做？", "options": [{"type": 0, "label": "專心照顧茶園和生意", "result": "你專心做茶。新建設跟你關係不大，日子照常過。", "effects": {"family": 1}}, {"type": 1, "label": "送兒子進西學堂", "result": "兒子進了西學堂，學英文和算學。他回家教你看電報上的英文字母。", "effects": {"adapt": 1}, "flags": ["kid_school"]}, {"type": 2, "label": "自己應聘電報局或鐵路局", "branches": [{"if": ["外語", "算學"], "result": "你會外語，被電報局錄用，負責和洋人往來的電報。茶園交給家人照顧，你成了新式機構的一員。", "effects": {"wealth": 2, "fame": 1, "adapt": 1}, "gain": ["機械"], "role": "電報局職員", "fit": 1}, {"result": "你沒有外語和算學的底子，只能在鐵路工地做監工。工作辛苦，但你學到了不少新知識。", "effects": {"wealth": 1, "family": -1, "adapt": 1}, "gain": ["機械"], "role": "鐵路監工"}]}], "card": {"decline": "靠人力、帆船的傳統運輸與傳信", "rise": "電報員、鐵路工人、郵政人員", "learn": "西學堂（1887）：臺灣第一所教西方學問的官辦學堂"}, "ep": "第7集｜火車、電報來到臺灣", "hook": "【系統】科技升級：鐵路、電報、郵政。", "review": "劉銘傳時期的建設，讓臺灣成為當時中國最先進的省分之一。"}, {"year": 1890, "age": 40, "stage": "中年", "title": "錫蘭茶的挑戰", "book": "延伸｜國際茶葉競爭", "bg": "teahill", "music": "tense", "scene": ["英國人在錫蘭、印度大規模種茶，用機器製茶，價錢便宜，搶走了不少歐美市場。", "臺灣茶商得想辦法：要繼續做烏龍茶、改做包種茶，還是乾脆改做正在漲價的樟腦？"], "question": "你的茶業要往哪裡走？", "options": [{"type": 0, "label": "繼續擴大烏龍茶", "result": "你照舊擴大烏龍茶。美國還是有人喜歡，但價錢一年不如一年。", "effects": {"wealth": -1}, "fit": -1}, {"type": 1, "label": "改做樟腦生意", "result": "樟腦價格高漲，你轉做樟腦買賣，賺了一筆。但樟樹多在山區，常和原住民發生衝突，風險很大。", "effects": {"wealth": 2, "family": -1}, "role": "樟腦商"}, {"type": 2, "label": "轉做包種茶，開拓南洋市場", "branches": [{"if": ["pouchong", "製茶"], "result": "你早就熟悉包種茶，這回在臺北設廠直接加工，銷往南洋，生意越做越大。", "effects": {"wealth": 2, "fame": 1}, "role": "包種茶商", "fit": 1}, {"result": "你從頭學做包種茶，請來福建的茶師幫忙。第一年品質不穩，第二年才慢慢打開南洋市場。", "effects": {"wealth": 1, "adapt": 1}, "gain": ["製茶"], "role": "包種茶商", "fit": 1}]}], "card": {"decline": "北臺灣烏龍茶的歐美市場：被錫蘭、印度茶搶走", "rise": "包種茶、樟腦", "learn": "了解國際市場，才知道下一步該往哪裡走", "note": "1895 年臺灣割讓給日本——那是下一章的故事。"}, "ep": "第8集｜錫蘭茶來搶市場", "hook": "【系統警告】全球競爭來襲！", "review": "錫蘭、印度紅茶崛起後，臺灣改發展包種茶和樟腦，北臺灣經濟持續發展。"}], "swot": {"S": "年輕，家住港口附近，家裡有點小生意", "W": "不懂外語，也沒有本錢", "O": "淡水開港，北部山坡很適合種茶", "T": "國際市場競爭，還有戰爭封鎖港口"}}]}</script>
+
+<script>
+(function(){
+"use strict";
+var D=JSON.parse(document.getElementById('data').textContent);
+var ROLES=D.roles, TYPE=['堅守','觀望','轉型'], SK=['wealth','family','fame','adapt'];
+var KEY='qingCareer2', app=document.getElementById('app'), st=null;
+
+/* ================= palette & portrait ================= */
+var C={bg:'#d9c7a1',bg2:'#cdb88e',frame:'#5b4636',skin:'#f0c39a',skinS:'#d49a72',shaved:'#e6c3a4',blush:'#ec9a8a',eye:'#2a1f1d',mouth:'#a6413a',
+hair:'#2b2328',hairL:'#463a42',gray:'#bdb8b4',grayS:'#8f8a87',white:'#f2efe8',hat:'#1f1b22',hatL:'#3a3340',knot:'#d23b2e',
+blue:'#3f6aa0',blueS:'#2d4f7c',blueL:'#6b93c4',teal:'#4f7a74',tealS:'#3a5c57',tealL:'#78a39b',ink:'#2b2a3a',inkS:'#1f1e2b',inkL:'#45435a',gold:'#e3b347',goldS:'#a87f2a',
+brown:'#7a5236',brownS:'#58391f',brownL:'#a3764f',sky:'#7fa7c9',skyS:'#5d86aa',skyL:'#a7c6e0',straw:'#d5ab5c',strawS:'#a98035',strawL:'#ecca86',
+leaf:'#5b9a4a',leafS:'#3f7434',paper:'#f4ecd8',red:'#b53a2e',redS:'#86271f',
+hemp:'#8a7a5c',hempS:'#665a42',hempL:'#a8987a',gray2:'#6f727c',gray2S:'#53555e',gray2L:'#8d909a',
+indigo:'#34497a',indigoS:'#25355c',indigoL:'#5068a0',pink:'#c26a78',pinkS:'#94505c',pinkL:'#dc8e9a',plum:'#6a3d5a',plumS:'#4e2c42',plumL:'#8a5a7a',
+olive:'#6d7448',oliveS:'#525836',oliveL:'#8d9468'};
+
+function portrait(o){
+  var W=32,H=40,cv=document.createElement('canvas'); cv.width=W; cv.height=H; cv.className='px';
+  var g=cv.getContext('2d');
+  function p(x,y,w,h,c){ g.fillStyle=C[c]||c; g.fillRect(x,y,w||1,h||1); }
+  p(0,0,W,H,'bg'); for(var y=0;y<H;y+=4) for(var x=(y/4)%2*2;x<W;x+=4) p(x,y,1,1,'bg2');
+  var age=o.age, f=o.sex==='f', robe=o.robe||'blue', robeS=robe+'S', robeL=robe+'L';
+  var hairC=age==='old'?'gray':'hair', hairS=age==='old'?'grayS':'hairL';
+  // body
+  p(8,27,16,1,robe); p(6,28,20,1,robe); p(5,29,22,11,robe);
+  p(5,29,2,11,robeS); p(25,29,2,11,robeS); p(7,31,1,9,robeS); p(24,31,1,9,robeS);
+  p(14,23,4,4,'skinS'); p(15,23,2,3,'skin');
+  p(13,26,6,2,robeL); p(15,26,2,1,robe);
+  if(o.poor){ p(9,33,3,3,robeL); p(9,33,3,1,robeS); p(21,36,3,2,robeS); p(13,27,6,1,'skinS'); p(14,28,4,1,'skin'); }
+  if(!o.magua){
+    [[17,28],[18,29],[19,30],[20,31],[21,32],[21,33],[21,34],[21,35],[21,36],[21,37],[21,38],[21,39]].forEach(function(q){ p(q[0],q[1],1,1,robeS); });
+    p(18,28,1,1,robeL); p(20,30,1,1,robeL); p(22,33,1,1,robeL); p(22,36,1,1,robeL);
+  } else {
+    p(6,28,20,1,'ink'); p(5,29,22,11,'ink'); p(8,27,16,1,'ink'); p(5,29,2,11,'inkL'); p(25,29,2,11,'inkL');
+    p(15,28,2,12,robe); for(var b=29;b<40;b+=3){ p(14,b,1,1,'gold'); p(17,b,1,1,'gold'); }
+    p(13,26,6,2,robeL); p(15,26,2,1,robe);
+  }
+  if(f && o.apron){ p(10,31,12,9,'paper'); p(10,31,12,1,'grayS'); }
+  // head
+  p(12,9,8,1,'skin'); p(11,10,10,1,'skin'); p(10,11,12,10,'skin'); p(11,21,10,1,'skin'); p(12,22,8,1,'skin');
+  p(21,11,1,10,'skinS'); p(20,21,1,1,'skinS'); p(19,22,1,1,'skinS'); p(9,14,1,3,'skin'); p(22,14,1,3,'skinS');
+  if(f){ // woman's hair: full hair, bun at back-top, side locks
+    p(11,6,10,1,hairC); p(10,7,12,2,hairC); p(9,9,3,6,hairC); p(20,9,3,6,hairC); p(11,9,10,2,hairC);
+    p(12,11,8,1,hairS); p(13,7,3,1,hairS);
+    p(12,3,8,3,hairC); p(13,2,6,1,hairC); p(14,3,3,1,hairS);
+    if(age!=='old'){ p(20,4,4,1,'gold'); p(23,3,1,1,'gold'); }
+    if(age!=='old' && age!=='kid'){ p(9,17,1,2,'gold'); p(22,17,1,2,'gold'); }
+    if(age==='kid'){ p(9,14,2,5,hairC); p(21,14,2,5,hairC); p(9,19,2,1,'knot'); p(21,19,2,1,'knot'); }
+  } else if(!o.hat){
+    p(12,7,8,1,hairC); p(11,8,10,1,hairC); p(10,9,2,2,hairC); p(20,9,2,2,hairC); p(13,7,2,1,hairS);
+    p(12,9,8,2,'shaved'); p(11,10,1,1,'shaved'); p(20,10,1,1,'shaved');
+  }
+  if(o.towel){ p(10,10,12,2,'white'); p(10,11,12,1,'gray'); p(21,10,2,3,'white'); }
+  var brow=age==='old'?'gray':'hair'; p(12,13,3,1,brow); p(17,13,3,1,brow);
+  if(age==='kid'){ p(13,15,2,2,'eye'); p(17,15,2,2,'eye'); p(13,15,1,1,'white'); p(17,15,1,1,'white'); }
+  else { p(13,15,2,1,'eye'); p(17,15,2,1,'eye'); p(13,16,2,1,'skinS'); p(17,16,2,1,'skinS'); if(f){ p(12,15,1,1,'eye'); p(19,15,1,1,'eye'); } }
+  p(16,18,1,1,'skinS');
+  if(age==='kid'||f){ p(11,18,2,1,'blush'); p(19,18,2,1,'blush'); }
+  if(o.mood==='worry'){ p(12,12,1,1,brow); p(19,12,1,1,brow); }
+  if(age==='mid' && !f){ p(13,19,3,1,'hair'); p(16,19,3,1,'hair'); p(12,20,1,1,'hair'); p(19,20,1,1,'hair'); p(15,21,2,1,'mouth'); }
+  else if(age==='old' && !f){ p(13,19,6,1,'white'); p(12,20,2,1,'white'); p(18,20,2,1,'white'); p(14,20,4,1,'skinS'); p(13,21,6,1,'white'); p(14,22,4,1,'white'); p(14,23,4,1,'gray'); p(15,24,2,2,'white');
+    p(12,11,2,1,'skinS'); p(18,11,2,1,'skinS'); p(11,17,1,1,'skinS'); p(20,17,1,1,'skinS'); }
+  else { if(age==='old'){ p(12,12,2,1,'skinS'); p(18,12,2,1,'skinS'); p(11,17,1,1,'skinS'); p(20,17,1,1,'skinS'); }
+    if(o.mood==='worry') p(15,20,2,1,'mouth'); else { p(14,20,1,1,'mouth'); p(15,21,2,1,'mouth'); p(17,20,1,1,'mouth'); } }
+  if(o.hat==='skull'){ p(12,6,8,1,'hat'); p(11,7,10,1,'hat'); p(10,8,12,3,'hat'); p(10,11,12,1,'hatL'); p(13,7,1,4,'hatL'); p(18,7,1,4,'hatL'); p(15,4,2,2,'knot'); p(15,5,2,1,'redS'); }
+  else if(o.hat==='scholar'){ p(10,5,12,6,'hat'); p(9,6,1,4,'hat'); p(22,6,1,4,'hat'); p(10,10,12,1,'hatL'); p(15,5,2,5,'hatL'); p(22,9,2,1,'hat'); p(23,10,1,4,'hat'); }
+  else if(o.hat==='official'){ p(9,8,14,3,'hat'); p(11,5,10,3,'redS'); p(12,4,8,1,'red'); p(15,2,2,2,'gold'); p(9,10,14,1,'hatL'); }
+  else if(o.hat==='straw'){ p(14,1,4,1,'strawS'); p(12,2,8,1,'straw'); p(10,3,12,1,'straw'); p(8,4,16,1,'straw'); p(6,5,20,1,'straw'); p(4,6,24,1,'straw'); p(3,7,26,1,'strawS');
+    for(var s=0;s<5;s++){ p(15-s*2,2+s,1,1,'strawS'); p(16+s*2,2+s,1,1,'strawL'); } p(11,8,1,6,'brownS'); p(20,8,1,6,'brownS'); if(!f) p(12,9,8,2,'shaved'); }
+  if(o.queueFront && !f){ var qc=age==='old'?'gray':'hair', qs=age==='old'?'grayS':'hairL'; for(var qy=14;qy<36;qy++) p(23,qy,2,1,qy%2?qc:qs); p(22,12,1,2,qc); p(23,36,2,1,'knot'); p(23,37,2,2,qc); }
+  var pr=o.prop;
+  if(pr==='abacus'){ p(5,32,11,7,'brownS'); p(6,33,9,5,'#3a281b'); p(6,34,9,1,'brownL'); for(var a=6;a<15;a+=2){ p(a,33,1,5,'brownS'); p(a,33,1,1,'goldS'); p(a,36,1,2,'goldS'); } p(4,35,2,2,'skin'); p(15,35,2,2,'skin'); }
+  else if(pr==='ledger'){ p(6,31,8,7,'red'); p(6,31,8,1,'redS'); p(7,33,6,1,'gold'); p(7,35,6,1,'gold'); p(13,31,1,7,'redS'); p(5,34,2,2,'skin'); }
+  else if(pr==='scroll'){ p(6,32,8,4,'paper'); p(5,31,1,6,'brown'); p(14,31,1,6,'brown'); p(7,33,5,1,'ink'); p(7,34,3,1,'ink'); p(4,33,2,2,'skin'); }
+  else if(pr==='book'){ p(6,31,8,7,'blue'); p(6,31,8,1,'blueS'); p(12,32,1,5,'paper'); p(7,33,3,1,'paper'); p(5,34,2,2,'skin'); }
+  else if(pr==='basket'){ p(2,24,6,9,'straw'); p(2,24,6,1,'strawS'); p(3,22,1,2,'leaf'); p(5,21,2,3,'leaf'); p(4,23,1,1,'leafS'); for(var by=26;by<33;by+=2) p(2,by,6,1,'strawS'); for(var sy=0;sy<12;sy++) p(9+sy,27+sy,1,1,'brownS'); }
+  else if(pr==='cane'){ p(4,26,4,1,'brown'); p(4,25,1,1,'brown'); p(7,27,1,13,'brown'); p(8,27,1,13,'brownS'); p(6,30,4,2,'skin'); p(6,32,4,1,'skinS'); }
+  else if(pr==='pole'){ p(0,25,32,2,'strawS'); p(0,25,32,1,'straw'); p(1,27,1,8,'brownS'); p(30,27,1,8,'brownS'); p(0,35,3,4,'brown'); p(29,35,3,4,'brown'); p(6,27,3,2,'skin'); }
+  else if(pr==='wrench'){ p(5,30,2,9,'gray2'); p(4,29,4,2,'gray2L'); p(4,28,1,2,'gray2L'); p(7,28,1,2,'gray2L'); p(5,33,3,2,'skin'); }
+  else if(pr==='brush'){ p(6,33,8,5,'paper'); p(7,34,6,1,'ink'); p(7,36,4,1,'ink'); p(15,28,1,7,'brown'); p(15,35,1,2,'hair'); p(14,31,3,2,'skin'); }
+  else if(pr==='yarn'){ p(5,32,7,6,'white'); p(6,33,5,1,'gray'); p(6,35,5,1,'gray'); p(8,30,1,10,'brown'); p(4,35,2,2,'skin'); }
+  else if(pr==='cocoon'){ p(4,33,10,6,'strawS'); p(4,33,10,1,'straw'); for(var cx=5;cx<13;cx+=3){ p(cx,31,2,2,'white'); p(cx+1,32,1,1,'paper'); } p(3,35,2,2,'skin'); }
+  else if(pr==='key'){ p(5,35,10,3,'brown'); p(8,33,4,2,'gray2'); p(9,32,2,1,'gold'); p(11,32,3,2,'skin'); }
+  else if(pr==='tea'){ p(4,31,9,7,'strawS'); p(4,31,9,1,'straw'); p(5,29,2,2,'leaf'); p(8,28,2,3,'leaf'); p(11,29,1,2,'leafS'); p(3,34,2,2,'skin'); }
+  if(o.watch){ p(18,30,1,1,'gold'); p(19,31,1,1,'gold'); p(20,32,1,1,'gold'); p(20,33,2,2,'gold'); p(21,34,1,1,'goldS'); }
+  g.fillStyle=C.frame; g.fillRect(0,0,W,1); g.fillRect(0,H-1,W,1); g.fillRect(0,0,1,H); g.fillRect(W-1,0,1,H);
+  return cv;
+}
+function ageKey(a){ return a<=15?'kid':a<=36?'young':a<=55?'mid':'old'; }
+function looksFor(role, age, outfit, mood){
+  var k=ageKey(age), L=role.looks||{}, o={age:k, sex:role.sex||'m', mood:mood};
+  Object.assign(o, L[k]||{});
+  if(k!=='kid') Object.assign(o, outfit||{});
+  if(k==='old') Object.assign(o, L.oldFinal||{});
+  return o;
+}
+
+/* ================= scenes (128x72) ================= */
+var SW=128,SH=72;
+function R(g,x,y,w,h,c){ g.fillStyle=c; g.fillRect(Math.round(x),Math.round(y),w,h); }
+function rnd(i){ var x=Math.sin(i*127.1)*43758.5453; return x-Math.floor(x); }
+function sky(g,cols,h){ var n=cols.length, bh=Math.ceil((h||40)/n); cols.forEach(function(c,i){ R(g,0,i*bh,SW,bh+1,c); }); }
+function stars(g,t,n){ for(var i=0;i<(n||30);i++){ if(rnd(i+Math.floor(t*1.5)*.01)>.2) R(g,rnd(i)*SW,rnd(i+40)*22,1,1,'#c8d0f0'); } }
+function moon(g,x,y,c){ R(g,x+2,y,8,12,c); R(g,x,y+2,12,8,c); }
+function hills(g,y,c,a,s){ for(var x=0;x<SW;x++){ var h=Math.floor(a+3*Math.sin(x/9+s)+2*Math.sin(x/4+s)); R(g,x,y-h,1,h,c); } }
+function river(g,y,t,c,c2){ R(g,0,y,SW,SH-y,c); for(var i=0;i<26;i++){ var rx=(rnd(i)*SW+t*6*(1+rnd(i+9)))%SW, ry=y+2+Math.floor(rnd(i+3)*(SH-y-3)); R(g,rx,ry,3+Math.floor(rnd(i+5)*4),1,c2); } }
+function westBld(g,x,y,w,h,night,k){ var wall=night?'#3b3f55':['#efe6d6','#e4d6bd','#d9cbb3'][k%3], sh=night?'#2c2f41':'#c4b59a', win=night?'#1a1c28':'#6c5a4a';
+  R(g,x,y,w,h,wall); R(g,x+w-2,y,2,h,sh); R(g,x,y,w,2,sh);
+  for(var wy=y+5; wy<y+h-6; wy+=7) for(var wx=x+3; wx<x+w-4; wx+=5){ R(g,wx,wy,3,4,win); R(g,wx,wy,3,1,sh); } }
+function flags(g,x,y,t,k){ var fc=[['#b53a2e','#f4ecd8'],['#2d4f7c','#f4ecd8'],['#3a7a4a','#f4ecd8'],['#e3b347','#b53a2e'],['#f4ecd8','#2d4f7c']][k%5], wv=Math.floor(t*3+k)%2;
+  R(g,x,y,1,9,'#5b4636'); R(g,x+1,y,6,2,fc[0]); R(g,x+1,y+2,6+wv,2,fc[1]); }
+function chineseHouse(g,x,y,w,base,night){ var roof=night?'#1f262c':'#3d4a52', roofL=night?'#2c353d':'#56656e';
+  R(g,x+2,y,w-4,2,roof); R(g,x,y+2,w,3,roof); R(g,x-2,y+4,2,1,roof); R(g,x+w,y+4,2,1,roof);
+  for(var i=x;i<x+w;i+=3) R(g,i,y+2,1,3,roofL);
+  R(g,x+1,y+5,w-2,base-y-5,night?'#4a3b33':'#8b6a4e'); R(g,x+3,y+5,2,base-y-5,night?'#5a2520':'#a8342a'); R(g,x+w-5,y+5,2,base-y-5,night?'#5a2520':'#a8342a'); }
+function sailship(g,x,y,t){ y+=Math.floor(t*2)%2; R(g,x,y,30,4,'#5b3a22'); R(g,x+2,y+4,26,2,'#3d2716'); R(g,x+1,y+1,28,1,'#7a5236');
+  [6,15,24].forEach(function(m,k){ R(g,x+m,y-20+k*2,1,20-k*2,'#3d2716'); R(g,x+m-4,y-18+k*2,9,6,'#f1ead9'); R(g,x+m-3,y-11+k*2,7,5,'#e3dac6'); }); R(g,x+15,y-23,4,2,'#b53a2e'); }
+function steamship(g,x,y,t,big){ y+=Math.floor(t*2)%2; var L=big?46:34;
+  R(g,x,y,L,5,'#2b2a3a'); R(g,x+2,y+5,L-4,2,'#1f1e2b'); R(g,x,y,L,1,'#b53a2e');
+  R(g,x+6,y-6,L-14,6,'#efe6d6'); for(var i=x+8;i<x+L-10;i+=4) R(g,i,y-4,2,2,'#5d86aa');
+  R(g,x+L/2-2,y-14,4,8,'#2b2a3a'); R(g,x+L/2-2,y-14,4,2,'#b53a2e');
+  for(var s=0;s<4;s++){ var sx=x+L/2-1-s*3-Math.floor(t*3)%3, sy=y-17-s*3; R(g,sx,sy,4+s,3,'rgba(90,90,100,'+(0.7-s*0.15)+')'); }
+  R(g,x+3,y-10,1,10,'#3d2716'); R(g,x+L-4,y-10,1,10,'#3d2716'); }
+function junk(g,x,y,t){ y+=Math.floor(t*2+1)%2; R(g,x,y,16,3,'#6a4428'); R(g,x+1,y+3,14,1,'#4a2e1a'); R(g,x+7,y-12,1,12,'#3d2716'); R(g,x+3,y-11,9,9,'#b07a4a'); for(var i=0;i<4;i++) R(g,x+3,y-10+i*2,9,1,'#8a5a32'); }
+function person(g,x,y,c,k,t,hat){ var sh=Math.floor((t||0)*2+k)%2; R(g,x,y,3,2,'#f0c39a'); if(hat) R(g,x-1,y-1,5,1,hat); else R(g,x,y-1,3,1,'#2b2328'); R(g,x-1,y+2,5,5,c); R(g,x-1,y+7,2,2+sh,'#1f1b22'); R(g,x+2,y+7,2,3-sh,'#1f1b22'); }
+function smoke(g,t,n,x0,y0,dark){ for(var i=0;i<(n||8);i++){ var sx=(x0||0)+rnd(i)*(SW-(x0||0)), sy=(y0||30)-((t*8+rnd(i+3)*40)%40); R(g,sx,sy,6+rnd(i+2)*6,4,dark?'rgba(40,36,40,.55)':'rgba(120,115,120,.45)'); } }
+function rain(g,t){ for(var k=0;k<70;k++){ var x=(rnd(k)*SW*1.4-t*30*(.8+rnd(k+2)*.4))%(SW+30); if(x<0) x+=SW+30; var y=(rnd(k+7)*SH+t*90*(.8+rnd(k+3)*.4))%SH; R(g,x,y,1,3,'rgba(220,230,240,.55)'); } }
+function soldier(g,x,y,t,k){ var sh=Math.floor(t*2+k)%2; R(g,x+1,y-4,1,10,'#9aa0a8'); R(g,x-1,y,4,1,'#b53a2e'); R(g,x,y-1,2,1,'#3a2a1f'); R(g,x,y+1,2,2,'#f0c39a'); R(g,x-1,y+3,4,4,'#2d4f7c'); R(g,x,y+4,2,1,'#f4ecd8'); R(g,x-1,y+7,1,2+sh,'#1f1b22'); R(g,x+2,y+7,1,3-sh,'#1f1b22'); }
+function lanterns(g,t,y){ for(var l=0;l<5;l++){ var lx=10+l*24, fl=Math.floor(t*4+l)%2; R(g,lx,y,1,4,'#5b4636'); R(g,lx-2,y+4,5,5,fl?'#e04a32':'#c8382a'); R(g,lx-1,y+5,3,3,'#f2a24e'); } }
+
+var SCENES={
+  canton:function(g,t){ sky(g,['#f0a860','#f4c07e','#f7d9a4'],30); moon(g,96,14,'#fff1c4'); hills(g,30,'#c79a76',4,0);
+    [4,22,40,58,76].forEach(function(x,k){ var top=24+(k%2)*3; westBld(g,x,top,17,48-top,false,k); flags(g,x+8,top-9,t,k); }); chineseHouse(g,96,26,28,48,false);
+    R(g,0,46,SW,4,'#b39c7c'); [[96,42],[100,42],[98,39],[106,42]].forEach(function(c){ R(g,c[0],c[1],4,4,'#a0703c'); R(g,c[0]+1,c[1]+2,2,1,'#5b3a22'); });
+    river(g,50,t,'#4f7f8f','#7fb0bd'); sailship(g,14,58,t); junk(g,(80+t*4)%150-10,60,t); },
+  war:function(g,t){ sky(g,['#5a4a4a','#7a5e52','#9a7a64'],48); hills(g,36,'#5b4a40',5,2);
+    R(g,0,30,70,18,'#6b5a4a'); for(var x=0;x<70;x+=6) R(g,x,27,4,3,'#6b5a4a'); R(g,0,30,70,1,'#8a7660');
+    chineseHouse(g,20,18,26,30,false); smoke(g,t,10,0,30,true);
+    river(g,48,t,'#3e5a64','#6a8a92'); sailship(g,74,56,t); sailship(g,98,60,t+.5);
+    var fl=Math.floor(t*4)%4; if(fl===0){ R(g,72,44,6,4,'#fff1a0'); R(g,70,45,3,2,'#ffb040'); } if(fl===2){ R(g,96,48,6,4,'#fff1a0'); }
+    if(fl===1){ R(g,40,26,8,6,'#ffb040'); R(g,42,24,4,3,'#fff1a0'); } },
+  shop:function(g,t){ R(g,0,0,SW,SH,'#7d858c'); R(g,0,0,SW,14,'#6b7279');
+    R(g,8,10,112,6,'#2e353b'); R(g,4,16,120,4,'#2e353b'); for(var i=6;i<122;i+=4) R(g,i,16,2,4,'#454e56');
+    R(g,10,20,108,40,'#6b4f3a'); R(g,12,22,4,38,'#8a2e25'); R(g,112,22,4,38,'#8a2e25');
+    R(g,44,23,40,9,'#1f1b22'); [50,62,74].forEach(function(x){ R(g,x,25,5,5,'#c99a3a'); R(g,x+1,26,3,3,'#e3b347'); });
+    for(var sx=18;sx<110;sx+=6){ var cl=sx<52||sx>78; R(g,sx,34,5,26,cl?'#7a5a40':'#2a211a'); if(cl) R(g,sx,34,1,26,'#5e4430'); }
+    R(g,88,38,10,13,'#efe6d6'); R(g,89,40,8,1,'#5b4636'); R(g,89,42,6,1,'#5b4636'); R(g,93,47,4,3,'#b53a2e');
+    R(g,0,60,SW,12,'#4f565c'); R(g,20,66,18,2,'#5d6a73'); R(g,76,68,22,2,'#5d6a73'); rain(g,t); },
+  bund:function(g,t){ sky(g,['#8fb4d4','#a9c6de','#c7dbe8'],36);
+    [[2,14,20],[24,20,16],[42,10,22],[66,18,18],[86,12,20],[108,22,18]].forEach(function(b,k){ westBld(g,b[0],b[1],b[2],46-b[1],false,k); if(k===2){ R(g,b[0]+7,b[1]-6,8,6,'#7a8a6a'); R(g,b[0]+9,b[1]-9,4,3,'#7a8a6a'); } flags(g,b[0]+b[2]-4,b[1]-9,t,k); });
+    R(g,0,44,SW,4,'#a89878'); for(var i=0;i<8;i++) person(g,8+i*15+Math.floor(t*2+i)%3,37,['#3f6aa0','#7a5236','#2b2a3a','#8a7a5c'][i%4],i,t);
+    river(g,48,t,'#5c7f86','#89aeb4'); steamship(g,10,58,t,false); junk(g,(60+t*5)%150-16,62,t); sailship(g,84,60,t); },
+  siege:function(g,t){ R(g,0,0,SW,48,'#1b2340'); stars(g,t); moon(g,104,6,'#f1ead0');
+    [4,22,40,58,76].forEach(function(x,k){ var top=24+(k%2)*3; westBld(g,x,top,17,48-top,true,k); }); chineseHouse(g,96,26,28,48,true);
+    R(g,0,46,SW,4,'#3a3a40'); lanterns(g,t,30); for(var s=0;s<11;s++) soldier(g,6+s*11,38,t,s); smoke(g,t,6,0,26,true);
+    river(g,50,t,'#1f3345','#2e4a60'); },
+  office:function(g,t){ R(g,0,0,SW,SH,'#5a4232'); for(var x=0;x<SW;x+=8) R(g,x,0,1,52,'#4a3426'); R(g,0,52,SW,20,'#3a2a20');
+    R(g,74,8,46,30,'#2a211a'); R(g,76,10,42,26,'#9cc0d8'); R(g,76,28,42,8,'#5c7f86'); steamship(g,82,28,t,false); R(g,96,10,2,26,'#2a211a'); R(g,76,22,42,1,'#2a211a');
+    R(g,8,14,40,4,'#2a211a'); for(var b=0;b<9;b++) R(g,9+b*4,6,3,8,['#8a2e25','#2d4f7c','#3a7a4a','#a87f2a'][b%4]);
+    R(g,10,40,80,6,'#7a5236'); R(g,10,46,4,20,'#58391f'); R(g,86,46,4,20,'#58391f'); R(g,10,40,80,1,'#a3764f');
+    R(g,20,34,18,6,'#b53a2e'); R(g,21,35,16,1,'#e3b347'); R(g,44,35,16,5,'#3a281b'); for(var a=45;a<59;a+=2) R(g,a,35,1,5,'#a87f2a');
+    R(g,66,30,2,10,'#a87f2a'); R(g,62,30,10,1,'#a87f2a'); R(g,61,31,3,2,'#e3b347'); R(g,70,31,3,2,'#e3b347');
+    var fl=Math.floor(t*3)%2; R(g,100,42,6,6,'#2a211a'); R(g,101,38,4,4,fl?'#f2c14e':'#e8a83a'); },
+  steamer:function(g,t){ sky(g,['#9cc0d8','#b9d2e2','#d8e6ee'],48); hills(g,40,'#7d9a8a',3,1);
+    westBld(g,4,20,20,24,false,0); westBld(g,26,26,16,18,false,1); chineseHouse(g,46,28,22,44,false);
+    R(g,0,42,72,6,'#8a7a5c'); for(var i=0;i<5;i++){ R(g,10+i*12,38,5,4,'#a0703c'); person(g,6+i*13,33,'#8a7a5c',i,t,'#d5ab5c'); }
+    river(g,48,t,'#4a7680','#7ea6ae'); steamship(g,66,52,t,true); junk(g,(10+t*3)%150-16,64,t);
+    R(g,96,30,1,12,'#5b4636'); R(g,97,30,8,5,'#e3b347'); R(g,99,31,4,3,'#b53a2e'); },
+  bankrun:function(g,t){ sky(g,['#6b7279','#7d858c'],30); westBld(g,0,6,30,44,false,1); westBld(g,98,10,30,40,false,2);
+    chineseHouse(g,32,8,64,50,false); R(g,46,12,36,7,'#1f1b22'); [52,62,72].forEach(function(x){ R(g,x,14,4,4,'#c99a3a'); });
+    R(g,40,24,48,26,'#2a211a'); for(var sx=42;sx<86;sx+=5) R(g,sx,24,4,26,'#5e4430');
+    R(g,58,28,12,14,'#efe6d6'); R(g,59,30,10,1,'#5b4636'); R(g,59,32,8,1,'#5b4636'); R(g,59,34,9,1,'#5b4636'); R(g,63,38,4,3,'#b53a2e');
+    R(g,0,50,SW,22,'#5d6a73');
+    for(var i=0;i<14;i++){ var px=8+i*8.5, py=52+(i%3)*5, arm=Math.floor(t*4+i)%2; person(g,px,py,['#3f6aa0','#7a5236','#2b2a3a','#8a7a5c','#4f7a74'][i%5],i,t); if(arm) R(g,px+3,py-2,1,4,'#f0c39a'); }
+    for(var k=0;k<8;k++){ var x=(rnd(k)*SW+t*14*(rnd(k+1)+.5))%SW, y=(rnd(k+4)*30+t*10)%40+10; R(g,x,y,3,2,'#f4ecd8'); } },
+  study:function(g,t){ R(g,0,0,SW,SH,'#4a3628'); for(var x=0;x<SW;x+=10) R(g,x,0,1,50,'#3e2c20'); R(g,0,50,SW,22,'#33251b');
+    R(g,8,6,36,26,'#2a1f17'); R(g,10,8,32,22,'#1d2440'); stars(g,t,10); R(g,25,8,1,22,'#2a1f17'); R(g,10,18,32,1,'#2a1f17'); moon(g,30,10,'#f1ead0');
+    R(g,56,8,64,4,'#2a1f17'); R(g,56,24,64,4,'#2a1f17'); for(var b=0;b<14;b++){ R(g,58+b*4.4,12,3,12,['#8a2e25','#2d4f7c','#c9b48a','#3a7a4a','#a87f2a'][b%5]); }
+    for(var c=0;c<12;c++) R(g,58+c*5,28-6,4,2,'#d9c7a1');
+    R(g,14,40,90,5,'#6a4428'); R(g,16,45,4,18,'#4a2e1a'); R(g,98,45,4,18,'#4a2e1a');
+    R(g,30,36,22,4,'#f4ecd8'); R(g,32,37,16,1,'#2b2a3a'); R(g,32,38,12,1,'#2b2a3a'); R(g,56,35,2,5,'#7a5236'); R(g,56,33,2,2,'#2b2328'); R(g,62,37,8,3,'#2b2a3a');
+    var fl=Math.floor(t*4)%3; R(g,84,32,4,8,'#c9a25a'); R(g,85,28-fl,2,4,'#ffd36a'); R(g,79,24,14,16,'rgba(255,210,120,.10)'); },
+  refuge:function(g,t){ sky(g,['#6a5a5a','#8a6e5e','#a88a70'],40); for(var x=0;x<SW;x+=3){ var h=6+Math.floor(4*Math.sin(x/7)); R(g,x,30-h,3,h,'#4a3a34'); }
+    for(var i=0;i<4;i++){ R(g,10+i*16,24,10,6,'#3a2e2a'); } var f=Math.floor(t*4)%2; R(g,30,18-f,6,6,'#e8742e'); R(g,46,20,5,5,f?'#ffb040':'#e8742e'); smoke(g,t,10,0,24,true);
+    R(g,0,40,SW,32,'#7a8a52'); R(g,0,52,SW,8,'#a8946a'); for(var k=0;k<SW;k+=7) R(g,k,40+((k*3)%9),2,2,'#5d6c3c');
+    for(var p=0;p<9;p++){ var px=(p*15+t*6)%(SW+10)-6; person(g,px,49+(p%2),['#8a7a5c','#3f6aa0','#7a5236'][p%3],p,t); if(p%3===0) R(g,px-2,47,7,3,'#c9b48a'); }
+    R(g,(t*5)%(SW+20)-14,56,10,4,'#6a4428'); R(g,(t*5)%(SW+20)-12,60,2,2,'#2b2328'); R(g,(t*5)%(SW+20)-4,60,2,2,'#2b2328'); },
+  school:function(g,t){ R(g,0,0,SW,SH,'#d9cbb0'); R(g,0,50,SW,22,'#8a6a4a'); R(g,0,48,SW,2,'#6a4a30');
+    R(g,30,6,68,26,'#2f3a32'); R(g,32,8,64,22,'#3a4a40'); R(g,36,12,20,1,'#e8e8e0'); R(g,36,16,14,1,'#e8e8e0'); R(g,62,11,12,12,'#e8e8e0'); R(g,63,12,10,10,'#3a4a40'); R(g,67,16,2,2,'#e8e8e0'); R(g,78,14,14,1,'#e8e8e0'); R(g,78,18,10,1,'#e8e8e0'); R(g,84,22,6,1,'#e8e8e0');
+    R(g,6,10,16,16,'#2d4f7c'); R(g,8,12,12,12,'#6b93c4'); R(g,11,14,4,3,'#5b9a4a'); R(g,14,19,4,3,'#5b9a4a'); R(g,13,26,2,8,'#7a5236'); R(g,9,33,10,2,'#7a5236');
+    R(g,104,8,1,40,'#7a5236'); R(g,102,8,18,10,'#b53a2e'); R(g,104,10,14,1,'#e3b347');
+    person(g,62,36,'#2b2a3a',0,t,'#1f1b22'); R(g,66,30,1,7,'#7a5236');
+    for(var r=0;r<2;r++) for(var c=0;c<6;c++){ var x=12+c*19, y=52+r*9; R(g,x,y+4,14,2,'#6a4428'); person(g,x+5,y-2,['#7fa7c9','#3f6aa0','#7fa7c9'][c%3],c+r,t*.3); } },
+  court:function(g,t){ sky(g,['#c9a87a','#d9bc8e','#e8d2aa'],30); R(g,0,30,SW,42,'#c9b48a');
+    R(g,14,10,100,4,'#d9a62a'); R(g,8,14,112,5,'#c8921e'); R(g,4,18,6,2,'#c8921e'); R(g,118,18,6,2,'#c8921e'); for(var i=12;i<116;i+=4) R(g,i,14,2,5,'#a87214');
+    R(g,16,19,96,16,'#a8342a'); for(var c=20;c<110;c+=12) R(g,c,19,4,16,'#86271f'); R(g,52,24,24,11,'#5a1a14');
+    R(g,10,35,108,4,'#e8e0d0'); R(g,4,39,120,3,'#d9d0c0'); for(var s=0;s<5;s++) R(g,40,42+s*3,48,2,'#cfc6b4');
+    for(var p=0;p<6;p++){ person(g,10+p*8,52,'#2d4f7c',p,0,'#1f1b22'); } for(var q=0;q<6;q++){ person(g,72+q*8,52,'#4a3a5a',q,0,'#1f1b22'); }
+    var w=Math.floor(t*3)%2; R(g,30,46-w,8,4,'#f4ecd8'); R(g,31,47-w,6,1,'#2b2a3a'); R(g,90,45+w,8,4,'#f4ecd8'); R(g,91,46+w,6,1,'#2b2a3a'); },
+  examhall:function(g,t){ sky(g,['#a8b4c0','#c0cad4'],24); R(g,0,24,SW,48,'#b8a888');
+    for(var row=0;row<3;row++){ var y=22+row*15; R(g,0,y,SW,3,'#4a4a52'); for(var c=0;c<16;c++){ var x=c*8; R(g,x,y+3,7,10,'#8a7a62'); R(g,x+1,y+4,5,8,'#2a2420'); if((c+row)%3===0){ R(g,x+2,y+6,3,2,'#f0c39a'); R(g,x+2,y+8,3,3,'#3f6aa0'); } } }
+    R(g,54,4,20,10,'#a8342a'); R(g,52,2,24,3,'#3d4a52'); R(g,58,7,12,5,'#e3b347');
+    R(g,90,58,30,12,'#f4ecd8'); for(var l=0;l<5;l++) R(g,92,60+l*2,18+(l%2)*6,1,'#2b2a3a');
+    person(g,80,58,'#7fa7c9',0,t,'#1f1b22'); R(g,79,57,5,1,'#2b2328'); },
+
+  village:function(g,t){ sky(g,['#9cc4e0','#b8d6ea','#d4e6f0'],30); hills(g,30,'#8aa87a',5,3);
+    R(g,0,30,SW,42,'#6f9a4a'); for(var r=0;r<5;r++) for(var x=(r%2)*4;x<SW;x+=8) R(g,x,34+r*7,4,2,'#8ec060');
+    R(g,0,48,SW,1,'#5a7a3a'); R(g,0,58,SW,1,'#5a7a3a');
+    R(g,82,16,36,4,'#7a6a4a'); R(g,78,20,44,3,'#8a7a58'); R(g,84,23,32,16,'#c9b48a'); R(g,96,28,8,11,'#5a4232'); R(g,88,26,5,5,'#3a2e22'); R(g,108,26,5,5,'#3a2e22');
+    R(g,20,10,3,22,'#5a4232'); R(g,14,4,16,10,'#4f8a4a'); R(g,12,8,20,6,'#5b9a4a');
+    var b=Math.floor(t*2)%2; person(g,40,38+b,'#8a7a5c',0,t,'#d5ab5c'); R(g,38,46,1,4,'#7a5236'); person(g,60,40,'#8a7a5c',1,t,'#d5ab5c');
+    R(g,68,46,10,6,'#6a6a6a'); R(g,76,44,4,3,'#6a6a6a'); R(g,69,52,2,2,'#4a4a4a'); R(g,75,52,2,2,'#4a4a4a'); },
+  citywall:function(g,t){ sky(g,['#5a4e52','#7a6260','#9a7e70'],48); smoke(g,t,10,0,28,true);
+    R(g,0,26,SW,26,'#6e6658'); for(var x=0;x<SW;x+=8) R(g,x,22,5,4,'#6e6658'); R(g,0,26,SW,1,'#8a8070'); for(var y=30;y<52;y+=5) for(var x2=(y%2)*6;x2<SW;x2+=12) R(g,x2,y,11,1,'#5e574a');
+    R(g,50,32,28,20,'#3a2e22'); R(g,52,30,24,3,'#4a3e30'); R(g,46,10,36,4,'#3d4a52'); R(g,48,14,32,8,'#8b6a4e');
+    var f=Math.floor(t*3)%2; for(var i=0;i<6;i++){ var fx=8+i*20; R(g,fx,16+f*(i%2),1,8,'#5b4636'); R(g,fx+1,16+f*(i%2),6,4,'#c8382a'); person(g,fx+2,14,'#2b2a3a',i,t,'#c8382a'); }
+    R(g,0,52,SW,20,'#7a7060'); for(var p=0;p<7;p++) person(g,6+p*18+Math.floor(t*3+p)%2,56,['#8a7a5c','#3f6aa0'][p%2],p,t);
+    if(Math.floor(t*4)%5===0){ R(g,98,8,8,6,'#ffb040'); R(g,100,6,4,3,'#fff1a0'); } },
+  concession:function(g,t){ sky(g,['#b9cfe0','#cfdde8'],30);
+    westBld(g,0,6,40,40,false,0); westBld(g,42,12,30,34,false,1); westBld(g,74,4,54,42,false,2); flags(g,100,-4,t,1);
+    R(g,0,46,SW,26,'#8f8a80'); R(g,0,46,SW,2,'#a8a296'); R(g,0,60,SW,1,'#7a766c');
+    R(g,22,48,16,6,'#7a5236'); R(g,22,46,16,2,'#a8342a'); for(var c=0;c<4;c++) R(g,24+c*4,47,2,2,'#e3b347');
+    person(g,40,46,'#c26a78',0,t,null); R(g,40,45,3,1,'#2b2328'); R(g,42,44,2,2,'#2b2328');
+    person(g,92,44,'#2b2a3a',1,t,'#2b2a3a'); R(g,95,44,1,8,'#5b4636');
+    for(var p=0;p<8;p++){ var px=(p*17+t*4)%(SW+10)-6; person(g,px,58+(p%2)*3,['#8a7a5c','#6f727c','#7a5236'][p%3],p,t); R(g,px-1,56+(p%2)*3,5,3,'#c9b48a'); } },
+  factory:function(g,t){ sky(g,['#8a96a2','#a4aeb8'],30); for(var c=0;c<3;c++){ var cx=20+c*36; R(g,cx,4,6,26,'#6a4a3a'); R(g,cx,4,6,2,'#4a3428'); smoke(g,t,3,cx-4,8,true); }
+    R(g,0,24,SW,26,'#8a5a42'); for(var x=0;x<SW;x+=16){ R(g,x,18,16,6,'#5a4a4a'); R(g,x,18,1,6,'#3a3030'); } for(var w=4;w<SW;w+=12) R(g,w,30,8,10,'#2a2420');
+    var gl=Math.floor(t*4)%2; R(g,4,30,8,10,gl?'#e8742e':'#c85a20'); R(g,52,30,8,10,gl?'#c85a20':'#e8742e');
+    R(g,0,50,SW,22,'#5a5450'); R(g,40,52,40,10,'#3a3a40'); R(g,46,48,8,4,'#3a3a40'); var rot=Math.floor(t*4)%4; R(g,62,50-(rot%2)*2,10,10,'#6a6a72'); R(g,66,48+rot%2*2,2,14,'#9a9aa2'); R(g,60,54,14,2,'#9a9aa2');
+    for(var p=0;p<4;p++) person(g,14+p*8+(p>1?70:0),52,'#3f6aa0',p,t,'#2b2328'); },
+  street:function(g,t){ sky(g,['#c4d4e0','#d8e2ea'],24); westBld(g,0,4,44,40,false,1); chineseHouse(g,48,10,34,44,false); westBld(g,86,6,42,38,false,0);
+    R(g,0,44,SW,28,'#9a9488'); R(g,0,44,SW,2,'#b0aa9c'); for(var x=0;x<SW;x+=10) R(g,x,58,6,1,'#868074');
+    var rx=(t*10)%(SW+40)-30, b=Math.floor(t*4)%2; R(g,rx+10,48,14,8,'#e3b347'); R(g,rx+10,46,14,2,'#a87f2a'); R(g,rx+12,56,8,8,'#2b2328'); R(g,rx+14,58,4,4,'#9a9488'); R(g,rx+24,52,12,1,'#5b4636');
+    person(g,rx+15,40,'#3f6aa0',0,t,'#1f1b22'); person(g,rx+34,48+b,'#8a7a5c',1,t*2,null); R(g,rx+33,47,5,2,'#f2efe8');
+    var rx2=(t*7+70)%(SW+40)-30; R(g,rx2+10,52,14,8,'#e3b347'); R(g,rx2+12,60,8,8,'#2b2328'); R(g,rx2+24,56,12,1,'#5b4636'); person(g,rx2+34,52+b,'#6f727c',2,t*2,null);
+    for(var p=0;p<4;p++) person(g,8+p*32,64,['#7a5236','#2b2a3a'][p%2],p,t); },
+  lights:function(g,t){ R(g,0,0,SW,44,'#1a2038'); stars(g,t,14); westBld(g,0,8,40,38,true,0); westBld(g,44,14,36,32,true,1); westBld(g,84,6,44,40,true,2);
+    for(var i=0;i<4;i++){ var lx=16+i*32; R(g,lx,22,1,26,'#4a4a52'); R(g,lx-2,20,5,3,'#fff6c0'); R(g,lx-1,23,3,2,'rgba(255,240,160,.5)'); R(g,lx-4,44,9,2,'rgba(255,240,160,.25)'); }
+    R(g,0,10,SW,1,'#2a2a30'); for(var x=0;x<SW;x+=32) R(g,x,8,1,4,'#4a4a52');
+    R(g,0,46,SW,26,'#3a3a40'); R(g,0,46,SW,2,'#4a4a52'); for(var w=0;w<6;w++){ var fx=Math.floor(t*3+w)%2; R(g,8+w*20,30,4,5,fx?'#f2c14e':'#c99a3a'); }
+    for(var p=0;p<6;p++) person(g,(p*23+t*5)%(SW+8)-4,54+(p%2)*5,['#3f6aa0','#8a7a5c','#2b2a3a'][p%3],p,t); },
+  loom:function(g,t){ R(g,0,0,SW,SH,'#6a5240'); for(var x=0;x<SW;x+=9) R(g,x,0,1,52,'#5a4434'); R(g,0,52,SW,20,'#4a3a2c');
+    R(g,90,8,28,20,'#3a2e24'); R(g,92,10,24,16,'#9cc4e0'); R(g,92,20,24,6,'#6f9a4a'); R(g,103,10,2,16,'#3a2e24');
+    R(g,14,22,40,4,'#7a5236'); R(g,14,26,4,30,'#58391f'); R(g,50,26,4,30,'#58391f'); R(g,18,30,32,18,'#f2efe8'); for(var y=31;y<48;y+=2) R(g,18,y,32,1,'#e0d8c8'); R(g,18,40,32,2,'#7a5236');
+    var sh=Math.floor(t*4)%2; R(g,sh?22:42,36,6,2,'#a87f2a');
+    var a=Math.floor(t*6)%4; R(g,66,34,16,16,'#7a5236'); R(g,68,36,12,12,'#6a4428'); R(g,73,34,2,16,'#a3764f'); R(g,66,41,16,2,'#a3764f'); if(a%2) { R(g,68,37,12,1,'#a3764f'); R(g,68,46,12,1,'#a3764f'); }
+    R(g,84,40,3,10,'#58391f'); R(g,86,40,6,1,'#f2efe8'); R(g,60,56,30,2,'#58391f');
+    var fl=Math.floor(t*4)%3; R(g,100,42,4,6,'#c9a25a'); R(g,101,39-fl,2,3,'#ffd36a'); },
+  silkmill:function(g,t){ R(g,0,0,SW,SH,'#8a8478'); for(var x=0;x<SW;x+=16){ R(g,x,0,1,30,'#6a6458'); } R(g,0,0,SW,4,'#5a5448'); for(var w=8;w<SW;w+=24) R(g,w,6,12,10,'#c4d4e0');
+    R(g,0,30,SW,4,'#6a6458'); R(g,0,34,SW,1,'#4a4438'); var rot=Math.floor(t*6)%2; for(var s=4;s<SW;s+=12) R(g,s,30+rot,4,4,'#9a9488');
+    for(var i=0;i<6;i++){ var bx=6+i*20; R(g,bx,46,14,6,'#7a7a82'); R(g,bx+1,45,12,2,'#c4d4e0'); for(var k=0;k<3;k++) R(g,bx+2+k*4,46,2,1,'#f2efe8');
+      R(g,bx+6,35,1,10,'#f2efe8'); var st=(Math.floor(t*6+i)%3); R(g,bx+5,35+st*3,3,1,'#e8e0d0');
+      person(g,bx+5,52,['#34497a','#c26a78','#6a3d5a'][i%3],i,t*.2,null); R(g,bx+5,51,3,1,'#2b2328'); R(g,bx+6,50,2,1,'#2b2328');
+      var sx=bx+3+(Math.floor(t*8+i)%6); R(g,sx,40-((t*12+i*7)%8),2,2,'rgba(240,240,240,.6)'); }
+    R(g,0,62,SW,10,'#5a5448'); },
+  yamen:function(g,t){ R(g,0,0,SW,SH,'#5a3a30'); R(g,0,0,SW,6,'#3a2420'); for(var c=10;c<SW;c+=36) R(g,c,6,6,46,'#8a2e25');
+    R(g,40,8,48,10,'#1f1b22'); for(var i=0;i<4;i++) R(g,44+i*11,10,6,6,'#c99a3a');
+    R(g,0,52,SW,20,'#6a5a4a'); for(var x=0;x<SW;x+=16) R(g,x,52,1,20,'#5a4a3a');
+    R(g,36,32,56,8,'#8a2e25'); R(g,36,32,56,2,'#a8342a'); R(g,40,40,4,12,'#5a1a14'); R(g,84,40,4,12,'#5a1a14');
+    R(g,46,28,10,4,'#f4ecd8'); R(g,60,29,8,3,'#2b2a3a'); R(g,72,26,2,6,'#7a5236');
+    person(g,62,22,'#2d4f7c',0,t,'#1f1b22');
+    for(var p=0;p<3;p++){ person(g,14+p*8,40,'#6f727c',p,t*.3,'#1f1b22'); person(g,100+p*8,40,'#6f727c',p+1,t*.3,'#1f1b22'); }
+    var w=Math.floor(t*2)%2; R(g,20+w,46,8,3,'#f4ecd8'); },
+  shipyard:function(g,t){ sky(g,['#a8c4d8','#c4d8e4'],30); hills(g,30,'#7d9a8a',4,4);
+    R(g,0,30,SW,16,'#8a7a62'); R(g,6,14,4,16,'#5a4a3a'); R(g,6,14,40,2,'#5a4a3a'); R(g,42,14,2,8,'#5a4a3a'); var hk=Math.floor(t*2)%2; R(g,41,22+hk,4,3,'#3a3a40');
+    R(g,22,26,70,8,'#3a3a44'); R(g,26,22,62,4,'#4a4a54'); for(var r=26;r<88;r+=6) R(g,r,22,1,12,'#2a2a34'); R(g,52,12,5,10,'#2b2a3a');
+    for(var s=0;s<3;s++){ var sx=10+s*30; R(g,sx,34,1,12,'#5a4a3a'); }
+    for(var p=0;p<5;p++){ var px=28+p*13, a=Math.floor(t*4+p)%2; person(g,px,36,'#3f6aa0',p,t,'#2b2328'); if(a) R(g,px+3,33,1,3,'#9a9aa2'); }
+    if(Math.floor(t*4)%3===0){ R(g,60,24,2,2,'#ffe080'); R(g,40,28,2,2,'#ffe080'); }
+    river(g,46,t,'#4a7680','#7ea6ae'); steamship(g,90,56,t,false); },
+  telegraph:function(g,t){ sky(g,['#a8c4d8','#c8dae6'],40); hills(g,40,'#8aa87a',4,5); R(g,0,40,SW,32,'#7a9a5a');
+    for(var i=0;i<5;i++){ var px=8+i*30, py=14+i; R(g,px,py,2,40-py+2,'#5a4232'); R(g,px-4,py+2,10,1,'#5a4232'); R(g,px-3,py+1,1,1,'#c4d4e0'); R(g,px+4,py+1,1,1,'#c4d4e0'); }
+    for(var x=0;x<SW;x++){ var y=16+x/30+Math.sin(((x-8)%30)/30*Math.PI)*3; R(g,x,y,1,1,'#2b2a3a'); R(g,x,y+3,1,1,'#2b2a3a'); }
+    var pulse=(t*40)%SW; R(g,pulse,16+pulse/30+Math.sin(((pulse-8)%30)/30*Math.PI)*3-1,3,3,'#ffd36a');
+    R(g,74,42,40,22,'#c9b48a'); R(g,72,38,44,4,'#7a5236'); R(g,80,48,10,10,'#2a2420'); R(g,96,48,12,8,'#9cc4e0');
+    R(g,98,52,8,3,'#5a4232'); var k=Math.floor(t*6)%2; R(g,101,50+k,2,2,'#e3b347'); person(g,84,50,'#2d4f7c',0,t*.2,'#1f1b22'); },
+  railway:function(g,t){ sky(g,['#b8c8d4','#d0dce4'],34); hills(g,34,'#8a9a7a',5,6); R(g,0,34,SW,38,'#a8946a');
+    R(g,0,52,SW,3,'#6a5a4a'); for(var x=0;x<SW;x+=6) R(g,x,50,3,8,'#5a4232'); R(g,0,50,SW,1,'#9a9aa2'); R(g,0,56,SW,1,'#9a9aa2');
+    var tx=(t*10+90)%(SW+70)-40;
+    R(g,tx,36,26,12,'#2b2a3a'); R(g,tx+18,30,8,8,'#2b2a3a'); R(g,tx+4,28,4,8,'#3a3a44'); R(g,tx,46,30,2,'#b53a2e');
+    for(var w=0;w<3;w++){ R(g,tx+3+w*9,47,6,6,'#1f1e2b'); R(g,tx+5+w*9,49,2,2,'#9a9aa2'); }
+    for(var s=0;s<4;s++) R(g,tx+4-s*4-Math.floor(t*4)%3,22-s*4,5+s,3,'rgba(80,80,90,'+(0.7-s*.15)+')');
+    for(var c=1;c<3;c++){ var cx=tx-c*28; R(g,cx,38,24,10,'#7a5236'); R(g,cx+2,40,20,3,'#3a2a20'); R(g,cx+3,48,4,4,'#1f1e2b'); R(g,cx+17,48,4,4,'#1f1e2b'); }
+    for(var p=0;p<5;p++){ person(g,10+p*24,60,['#8a7a5c','#2d4f7c','#6f727c'][p%3],p,t,p%2?'#1f1b22':'#d5ab5c'); }
+    R(g,104,58,8,6,'#7a6a5a'); R(g,108,56,4,3,'#7a6a5a'); },
+  tamsui:function(g,t,war){ if(war) sky(g,['#5a5258','#7a6a68','#9a8678'],46); else sky(g,['#9cc4e0','#b8d6ea','#d4e6f0'],46);
+    for(var x=0;x<SW;x++){ var h=Math.floor(14+8*Math.sin(x/16)+3*Math.sin(x/5)); R(g,x,40-h,1,h,war?'#4a5a48':'#5d8a5a'); }
+    for(var x2=0;x2<56;x2++){ var h2=Math.floor(8+4*Math.sin(x2/8)); R(g,x2,40-h2,1,h2,war?'#3a4a3a':'#4a7a4a'); }
+    R(g,74,22,14,10,'#b5462e'); R(g,72,20,18,3,'#8a2e25'); R(g,78,26,3,6,'#3a2a20'); R(g,94,26,16,8,'#efe6d6'); R(g,92,24,20,3,'#8a5a42');
+    R(g,0,38,SW,4,'#a8946a'); for(var h3=0;h3<5;h3++) R(g,8+h3*10,33,7,5,'#c9b48a'); for(var h4=0;h4<5;h4++) R(g,8+h4*10,32,7,1,'#3d4a52');
+    river(g,42,t,war?'#3e5a64':'#4f8090',war?'#6a8a92':'#7fb0bd'); junk(g,(20+t*4)%150-16,58,t);
+    if(war){ sailship(g,84,58,t); steamship(g,40,62,t,false); smoke(g,t,8,0,30,true); var f=Math.floor(t*4)%4; if(f===0){ R(g,82,52,6,4,'#fff1a0'); } if(f===2){ R(g,30,30,6,5,'#ffb040'); } }
+    else { sailship(g,84,58,t); flags(g,80,12,t,0); } },
+  tamsuiwar:function(g,t){ SCENES.tamsui(g,t,true); },
+  teahill:function(g,t){ sky(g,['#b8d4e6','#d0e2ee'],30); R(g,0,26,SW,42,'#6a9a5a'); for(var x=0;x<SW;x++){ var h=Math.floor(18+6*Math.sin(x/14)); R(g,x,44-h,1,h,'#6a9a5a'); }
+    for(var r=0;r<7;r++){ var y=28+r*6; for(var x2=(r%2)*5;x2<SW;x2+=10){ R(g,x2,y,8,4,'#3f7434'); R(g,x2+1,y,6,1,'#5b9a4a'); } }
+    R(g,0,66,SW,6,'#8a7a5c');
+    for(var p=0;p<4;p++){ var px=18+p*28, py=34+(p%2)*12, a=Math.floor(t*3+p)%2; person(g,px,py,['#34497a','#c26a78','#3f6aa0','#6a3d5a'][p],p,t*.2,'#d5ab5c'); R(g,px+3,py+3+a,2,2,'#5b9a4a'); R(g,px-3,py+4,3,4,'#c9a25a'); }
+    R(g,100,12,20,10,'#efe6d6'); R(g,98,10,24,3,'#8a5a42'); },
+  teashop:function(g,t){ sky(g,['#c4d4e0','#d8e2ea'],20); chineseHouse(g,4,6,40,40,false); chineseHouse(g,46,4,38,40,false); westBld(g,88,8,40,32,false,2);
+    R(g,10,12,28,5,'#1f1b22'); R(g,52,10,26,5,'#1f1b22'); for(var c=0;c<3;c++){ R(g,14+c*8,13,4,3,'#c99a3a'); R(g,56+c*8,11,4,3,'#c99a3a'); }
+    R(g,0,40,SW,32,'#9a9488'); R(g,0,40,SW,2,'#b0aa9c');
+    for(var i=0;i<5;i++){ var bx=6+i*24; R(g,bx,52,18,3,'#7a5236'); R(g,bx+2,50,14,2,'#5b7a3a'); person(g,bx+7,44,['#c26a78','#34497a','#6a3d5a'][i%3],i,t*.3,null); R(g,bx+7,43,3,1,'#2b2328'); }
+    for(var b=0;b<4;b++){ R(g,92+b*8,34,6,6,'#a0703c'); R(g,93+b*8,36,4,1,'#5b3a22'); }
+    var px=(t*6)%(SW+10)-6; person(g,px,60,'#8a7a5c',1,t,'#d5ab5c'); R(g,px-6,59,16,1,'#a98035'); R(g,px-6,60,3,4,'#a0703c'); R(g,px+7,60,3,4,'#a0703c'); }
+};
+var sceneLoop=null;
+function mountScene(name, id){
+  var cv=document.getElementById(id||'scn'); if(!cv) return; var g=cv.getContext('2d'), fn=SCENES[name]||SCENES.canton, t0=performance.now(), last=-1;
+  if(sceneLoop) cancelAnimationFrame(sceneLoop);
+  (function loop(now){ var t=(now-t0)/1000, f=Math.floor(t*8); if(f!==last){ last=f; g.clearRect(0,0,SW,SH); fn(g,f/8); } if(document.body.contains(cv)) sceneLoop=requestAnimationFrame(loop); })(t0);
+}
+
+/* ================= audio ================= */
+var actx=null, master=null, musicOn=false, timer=null, nextT=0, step=0, track='calm';
+function ac(){ if(!actx){ var A=window.AudioContext||window.webkitAudioContext; if(!A) return null; actx=new A(); master=actx.createGain(); master.gain.value=0.16; master.connect(actx.destination); } if(actx.state==='suspended') actx.resume(); return actx; }
+function hz(n){ return 440*Math.pow(2,(n-69)/12); }
+function tone(f,t,d,type,vol){ var o=actx.createOscillator(), gn=actx.createGain(); o.type=type||'square'; o.frequency.setValueAtTime(f,t); gn.gain.setValueAtTime(0.0001,t); gn.gain.exponentialRampToValueAtTime(vol||0.4,t+0.01); gn.gain.exponentialRampToValueAtTime(0.0001,t+d); o.connect(gn); gn.connect(master); o.start(t); o.stop(t+d+0.02); }
+function noise(t,v){ var len=actx.sampleRate*0.05, buf=actx.createBuffer(1,len,actx.sampleRate), d=buf.getChannelData(0); for(var i=0;i<len;i++) d[i]=(Math.random()*2-1)*(1-i/len); var s=actx.createBufferSource(), gn=actx.createGain(); gn.gain.value=v||0.12; s.buffer=buf; s.connect(gn); gn.connect(master); s.start(t); }
+var N={D3:50,E3:52,F3:54,A2:45,B2:47,Fs2:42,A3:57,B3:59,D4:62,E4:64,F4:66,A4:69,B4:71,D5:74,E5:76,F5:78,A5:81};
+var TRACKS={
+ calm:{spb:0.16,mel:['A4','B4','D5','_','B4','A4','F4','_','E4','F4','A4','B4','A4','_','_','_','D5','E5','F5','E5','D5','B4','A4','_','B4','A4','F4','E4','D4','_','_','_','F4','A4','B4','D5','B4','_','A4','B4','D5','E5','D5','B4','A4','_','F4','_','E4','F4','A4','F4','E4','D4','E4','F4','D4','_','_','_','_','_','_','_'],bas:['D3','_','A2','_','D3','_','A2','_','B2','_','F3','_','A2','_','E3','_'],drum:4},
+ tense:{spb:0.2,mel:['B3','_','D4','E4','F4','_','E4','D4','B3','_','_','_','A3','B3','D4','_','F4','_','A4','F4','E4','_','D4','_','B3','_','_','_','_','_','_','_','F4','E4','D4','_','E4','D4','B3','_','A3','_','B3','D4','B3','_','_','_','D4','E4','F4','A4','F4','E4','D4','E4','B3','_','_','_','_','_','_','_'],bas:['B2','_','B2','_','Fs2','_','Fs2','_','A2','_','A2','_','Fs2','_','B2','_'],drum:2}};
+function sched(){ var T=TRACKS[track]; while(nextT<actx.currentTime+0.2){ var m=T.mel[step%T.mel.length]; if(m!=='_') tone(hz(N[m]),nextT,T.spb*1.6,'square',0.3); if(step%2===0){ var b=T.bas[(step/2)%T.bas.length]; if(b!=='_') tone(hz(N[b]),nextT,T.spb*1.8,'triangle',0.55); } if(step%8===T.drum) noise(nextT,0.1); nextT+=T.spb; step++; } }
+function musicStart(){ if(!ac()||timer) return; step=0; nextT=actx.currentTime+0.05; timer=setInterval(sched,50); }
+function musicStop(){ clearInterval(timer); timer=null; }
+function setTrack(n){ if(TRACKS[n]&&n!==track){ track=n; step=0; } }
+var sfx={ on:function(){ return musicOn&&ac(); },
+ ding:function(){ if(!sfx.on()) return; var t=actx.currentTime; tone(hz(86),t,0.12,'square',0.3); tone(hz(93),t+0.07,0.25,'square',0.25); },
+ blip:function(){ if(!sfx.on()) return; tone(hz(76+Math.floor(Math.random()*3)*2),actx.currentTime,0.03,'square',0.1); },
+ card:function(){ if(!sfx.on()) return; var t=actx.currentTime; [62,66,69,74,78].forEach(function(n,i){ tone(hz(n),t+i*0.06,0.18,'triangle',0.45); }); },
+ change:function(){ if(!sfx.on()) return; var t=actx.currentTime; [74,78,81,86].forEach(function(n,i){ tone(hz(n),t+i*0.05,0.12,'square',0.2); }); },
+ tick:function(){ if(!sfx.on()) return; tone(hz(81),actx.currentTime,0.04,'square',0.15); },
+ lock:function(){ if(!sfx.on()) return; tone(hz(50),actx.currentTime,0.15,'square',0.25); } };
+function toggleSound(){ musicOn=!musicOn; if(musicOn) musicStart(); else musicStop(); document.querySelectorAll('.snd').forEach(function(b){ b.textContent=musicOn?'🔊':'🔇'; b.classList.toggle('on',musicOn); }); }
+
+/* ================= state ================= */
+function role(){ return ROLES.filter(function(r){ return r.id===st.role; })[0]; }
+function fresh(){ return {phase:'intro',name:'',seat:'',role:null,i:-1,pick:null,stats:{},skills:[],flags:[],roles:[],place:'',placeBefore:null,outfit:{},log:[],faces:[]}; }
+function begin(r){ st.role=r.id; st.stats=Object.assign({},r.start); st.skills=(r.skills||[]).slice(); st.flags=[]; st.roles=[r.startRole||r.short]; st.place=r.startPlace||''; st.outfit={}; st.log=[]; st.faces=[]; st.order={}; st.i=0; st.pick=null; st.phase='scene'; }
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(st)); }catch(e){} }
+function load(){ try{ var v=localStorage.getItem(KEY); return v?JSON.parse(v):null; }catch(e){ return null; } }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+var GL=D.glossary||{}, GLK=Object.keys(GL).sort(function(a,b){ return b.length-a.length; }), GLR=GLK.length?new RegExp(GLK.join('|'),'g'):null;
+function gloss(t){ var h=esc(t); if(!GLR) return h; var used={}; return h.replace(GLR,function(m){ if(used[m]) return m; used[m]=1; return '<span class="gl" data-t="'+m+'">'+m+'</span>'; }); }
+document.addEventListener('click',function(e){ var g=e.target.closest&&e.target.closest('.gl'), tip=document.getElementById('tip');
+  if(g){ e.stopPropagation(); e.preventDefault(); var k=g.getAttribute('data-t'); tip.innerHTML='<span class="x">點任意處關閉</span><div class="small">📖 系統知識庫</div><b>'+esc(k)+'</b><div>'+esc(GL[k]||'')+'</div>'; tip.classList.remove('hidden'); sfx.tick(); return; }
+  if(!tip.classList.contains('hidden')) tip.classList.add('hidden'); },true);
+function tpl(s){ return String(s).replace(/\{place\}/g, st.place); }
+function hasF(f){ return st.flags.indexOf(f)>=0||st.skills.indexOf(f)>=0; }
+function hasAny(a){ if(!a) return true; if(typeof a==='string') a=[a]; return a.some(hasF); }
+function clamp(n){ return Math.max(0,Math.min(10,n)); }
+function available(o){ return !o.requires||hasAny(o.requires); }
+function resolve(o){ if(!o.branches) return o; for(var k=0;k<o.branches.length;k++){ var b=o.branches[k]; if(b.if&&!hasAny(b.if)) continue; if(b.ifStat){ var ok=true; for(var s in b.ifStat) if(st.stats[s]<b.ifStat[s]) ok=false; if(!ok) continue; } return b; } return o.branches[o.branches.length-1]; }
+
+/* ================= UI helpers ================= */
+var typing=null;
+function typeInto(el,paras,done){
+  if(typing) typing.cancel();
+  var full=paras.map(function(p){ return '<p>'+gloss(p)+'</p>'; }).join(''), chars=[];
+  paras.forEach(function(p,pi){ for(var c of p) chars.push({c:c,p:pi}); });
+  var n=0, dead=false, id;
+  function paint(){ var out=[],cur=-1,buf=''; for(var i=0;i<n;i++){ if(chars[i].p!==cur){ if(cur>=0) out.push('<p>'+esc(buf)+'</p>'); buf=''; cur=chars[i].p; } buf+=chars[i].c; } if(cur>=0) out.push('<p>'+esc(buf)+'<span style="opacity:.6">▌</span></p>'); el.innerHTML=out.join(''); }
+  function finish(){ dead=true; clearInterval(id); el.innerHTML=full; typing=null; done&&done(); }
+  id=setInterval(function(){ if(dead) return; n=Math.min(chars.length,n+1); if(n%2===0) sfx.blip(); paint(); if(n>=chars.length) finish(); },32);
+  typing={cancel:function(){ dead=true; clearInterval(id); typing=null; }, skip:finish};
+}
+function statsHtml(delta){
+  var h='<div class="stats" id="stats">';
+  SK.forEach(function(k){ var v=st.stats[k], cells=''; for(var i=0;i<10;i++) cells+='<i style="background:'+(i<v?({wealth:'#e3b347',family:'#6fb59c',fame:'#c8463a',adapt:'#6b93c4'})[k]:'#3a3348')+'"></i>';
+    var d=delta&&delta[k]; h+='<div class="st"><span>'+D.stats[k]+'</span><span class="cells">'+cells+'</span><b>'+v+'</b>'+'<span class="pop" style="color:'+(d>0?'#8fd6b7':'#f08c80')+'">'+(d?(d>0?'+':'')+d:'')+'</span></div>'; });
+  return h+'</div>';
+}
+function putFace(ev,mood,pop){
+  var f=document.getElementById('face'); if(!f) return; f.innerHTML='';
+  f.appendChild(portrait(looksFor(role(),ev.age,st.outfit,mood)));
+  var nm=document.createElement('div'); nm.className='nm'; nm.textContent=st.roles[st.roles.length-1]+'・'+ev.age+'歲'; f.appendChild(nm);
+  if(pop){ f.classList.remove('pop'); void f.offsetWidth; f.classList.add('pop'); }
+}
+
+/* ================= screens ================= */
+function renderIntro(){
+  var resume=load();
+  var h='<div class="hero fade"><div class="kick">晚清求生系統 v1.0</div><h1>重生之我在晚清求生</h1><div class="sub">點滿 SWOT 技能樹的逆襲之路</div></div>'+
+    '<div class="scene"><canvas class="px" id="scn" width="128" height="72"></canvas><div class="ttl">1840 年代・你醒來的地方</div></div>'+
+    '<div class="box fade">'+D.meta.intro.map(function(p){ return '<p>'+esc(p)+'</p>'; }).join('')+
+    '<p class="small">系統面板有四項數值：財力、家人、名望、適應力。點亮技能樹上的技能，才能解鎖某些選項。<br>看到<span class="gl" data-t="洋務">畫虛線的詞</span>，點一下就能打開「系統知識庫」。</p>'+
+    '<div class="fld"><label>姓名（選填）<input id="nm" maxlength="12" autocomplete="off"></label><label>座號（選填）<input id="seat" maxlength="6" inputmode="numeric" autocomplete="off"></label></div></div>'+
+    '<button class="btn" id="go">開始重生 ▶</button><button class="btn alt snd'+(musicOn?' on':'')+'" id="sndIntro">'+(musicOn?'🔊':'🔇')+'</button>';
+  if(resume && resume.role && resume.phase!=='end' && resume.phase!=='intro') h+='<button class="btn alt" id="resume">繼續上次進度（'+esc((ROLES.filter(function(r){return r.id===resume.role;})[0]||{}).name||'')+'・事件 '+(resume.i+1)+'）</button>';
+  h+='<p class="small" style="margin-top:12px">'+esc(D.meta.disclaimer)+'</p>';h+='<p class="small" style="margin-top:4px"><a href="./" style="color:inherit">← 回到遊戲首頁</a></p>';
+  app.innerHTML=h; mountScene('bund');
+  document.getElementById('sndIntro').onclick=toggleSound;
+  document.getElementById('go').onclick=function(){ st=fresh(); st.name=document.getElementById('nm').value.trim(); st.seat=document.getElementById('seat').value.trim(); st.phase='draw'; sfx.ding(); render(); };
+  var r=document.getElementById('resume'); if(r) r.onclick=function(){ st=resume; if(st.phase==='choose') st.phase='scene'; render(); };
+}
+
+function renderDraw(){
+  if(sceneLoop) cancelAnimationFrame(sceneLoop);
+  var h='<div class="hero fade"><div class="kick">系統正在分配重生身分……</div><h1>這一世，你會是誰？</h1></div><div class="roster" id="roster"></div><div id="reveal"></div>';
+  app.innerHTML=h;
+  var ro=document.getElementById('roster');
+  ROLES.forEach(function(r,i){ var d=document.createElement('div'); d.className='rc'; d.id='rc'+i; d.appendChild(portrait(looksFor(r,13,{},null))); d.appendChild(document.createTextNode(r.short)); ro.appendChild(d); });
+  var pick=Math.floor(Math.random()*ROLES.length), n=ROLES.length, steps=14+pick+(n*2-(14%n)), k=0;
+  function stepf(){ if(!document.getElementById('rc0')||st.phase!=='draw') return; ROLES.forEach(function(_,i){ document.getElementById('rc'+i).classList.toggle('hot',i===k%n); }); sfx.tick(); k++;
+    if(k<=steps) setTimeout(stepf, 60+k*k*0.9); else land(); }
+  function land(){ var idx=(k-1)%n, r=ROLES[idx]; ROLES.forEach(function(_,i){ document.getElementById('rc'+i).classList.toggle('dim',i!==idx); }); sfx.change();
+    begin(r); st.phase='drawn'; save(); showRole(r); }
+  setTimeout(stepf,300);
+}
+function showRole(r){
+  var rv=document.getElementById('reveal'); if(!rv){ app.innerHTML='<div id="reveal"></div>'; rv=document.getElementById('reveal'); }
+  rv.innerHTML='<div class="box fade"><div class="rolecard"><span id="rcv"></span><div><div class="small">叮！你重生成為</div><h2>'+esc(r.name)+'</h2><div class="small">'+esc(r.born)+'</div></div></div>'+
+    r.intro.map(function(p){ return '<p style="margin-top:8px">'+gloss(p)+'</p>'; }).join('')+statsHtml()+'</div>'+
+    (r.swot?'<div class="box"><h3>開局 SWOT 分析</h3><div class="swot"><div class="s"><b>S 優勢</b>'+esc(r.swot.S)+'</div><div class="w"><b>W 劣勢</b>'+esc(r.swot.W)+'</div><div class="o"><b>O 機會</b>'+esc(r.swot.O)+'</div><div class="t"><b>T 威脅</b>'+esc(r.swot.T)+'</div></div></div>':'')+
+    '<div class="box"><h3>技能樹</h3>'+treeHtml()+'<p class="small" style="margin:6px 0 0">發光的是你已點亮的技能。有些選項要先點亮技能才能選。</p></div><button class="btn" id="start">開始求生 ▶</button>';
+  document.getElementById('rcv').appendChild(portrait(looksFor(r,13,{},null)));
+  document.getElementById('start').onclick=function(){ st.phase='scene'; save(); sfx.ding(); render(); };
+  rv.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+var TREE=[['學問線',['識字','算學','機械']],['交際線',['外語','人脈']],['經營線',['商業']]];
+function coreSkills(){ var a=[]; TREE.forEach(function(t){ a=a.concat(t[1]); }); return a; }
+function specials(){ var c=coreSkills(); return st.skills.filter(function(x){ return c.indexOf(x)<0; }); }
+function node(x){ return '<span class="node'+(st.skills.indexOf(x)>=0?' on':'')+'">'+esc(x)+'</span>'; }
+function treeHtml(){ var h='<div class="tree">'; TREE.forEach(function(t){ h+='<div class="row"><span class="ln">'+t[0]+'</span>'+t[1].map(node).join('<span class="ar">→</span>')+'</div>'; });
+  var sp=specials(); if(sp.length) h+='<div class="row"><span class="ln">專長</span>'+sp.map(node).join('')+'</div>'; return h+'</div>'; }
+function stripHtml(){ return '<div class="strip">技能樹：'+coreSkills().map(node).join('')+specials().map(node).join('')+'</div>'; }
+function topbar(ev){
+  var n=role().events.length, h='<div class="top"><div class="yr">'+ev.year+'</div><div class="info"><b>'+esc(role().short)+'・'+esc(ev.stage)+'・約 '+ev.age+' 歲</b><br>📍'+esc(st.phase==='result'&&st.placeBefore?st.placeBefore:st.place)+
+    (st.name?'｜'+esc(st.name)+(st.seat?'（'+esc(st.seat)+'）':''):'')+'｜第 '+(st.i+1)+'/'+n+' 集</div><button class="snd'+(musicOn?' on':'')+'">'+(musicOn?'🔊':'🔇')+'</button></div><div class="dots">';
+  for(var k=0;k<n;k++) h+='<i class="'+(k<st.i?'done':k===st.i?'now':'')+'"></i>';
+  return h+'</div>';
+}
+function renderEvent(){
+  var ev=role().events[st.i]; setTrack(ev.music||'calm');
+  app.innerHTML=topbar(ev)+statsHtml()+stripHtml()+(ev.ep?'<div class="ep">'+esc(ev.ep)+'</div>':'')+'<div class="scene fade"><canvas class="px" id="scn" width="128" height="72"></canvas><div class="ttl">'+esc(ev.title)+'</div></div>'+
+    (ev.book?'<span class="book">'+esc(ev.book)+'</span>':'')+
+    '<div class="dlg" id="dlg"><div class="face" id="face"></div><div style="flex:1">'+(ev.hook?'<div class="hook">'+esc(ev.hook)+'</div>':'')+'<div class="txt" id="txt"></div></div><span class="more hidden" id="more">點一下跳過 ▶</span></div><div id="qa"></div><div id="after"></div>';
+  app.querySelector('.snd').onclick=toggleSound; mountScene(ev.bg); putFace(ev,ev.mood);
+  var txt=document.getElementById('txt'), more=document.getElementById('more');
+  if(st.phase==='scene'){ more.classList.remove('hidden'); document.getElementById('dlg').onclick=function(){ if(typing) typing.skip(); };
+    typeInto(txt,ev.scene.map(tpl),function(){ more.classList.add('hidden'); st.phase='choose'; save(); showQA(ev); }); }
+  else { txt.innerHTML=ev.scene.map(function(p){ return '<p>'+gloss(tpl(p))+'</p>'; }).join(''); showQA(ev); }
+  window.scrollTo(0,0);
+}
+function showQA(ev){
+  var qa=document.getElementById('qa'), h='<div class="q fade">'+esc(ev.question)+'</div><div class="opts fade">';
+  st.order=st.order||{}; if(!st.order[st.i]){ var a=ev.options.map(function(_,i){ return i; }); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)), t=a[i]; a[i]=a[j]; a[j]=t; } st.order[st.i]=a; save(); }
+  st.order[st.i].forEach(function(k,pos){ var o=ev.options[k]; var ok=available(o), dis=(!ok||st.phase==='result')?' disabled':'';
+    h+='<button class="opt'+(st.pick===k?' chosen':'')+'" data-k="'+k+'"'+dis+'><span class="k">'+'甲乙丙'[pos]+'</span><span class="lab">'+esc(tpl(o.label))+(!ok?'<span class="lock">🔒 '+esc(o.lockedHint||('需要技能：'+o.requires.join('或')))+'</span>':'')+'</span></button>'; });
+  var lab=ev.options.map(function(o){ return tpl(o.label); }).join('　'), terms=[]; if(GLR) (lab.match(GLR)||[]).forEach(function(m){ if(terms.indexOf(m)<0) terms.push(m); });
+  qa.innerHTML=h+'</div>'+(terms.length?'<div class="terms">選項裡的詞（點一下看解釋）：'+terms.map(function(m){ return '<span class="gl" data-t="'+m+'">'+m+'</span>'; }).join('、')+'</div>':'');
+  if(st.phase==='choose') qa.querySelectorAll('.opt').forEach(function(b){ b.onclick=function(){ choose(+b.getAttribute('data-k')); }; });
+  else if(st.phase==='result') showResult(ev,false);
+}
+function chips(r,newSkills){
+  var h='', e=r.effects||{};
+  SK.forEach(function(k){ if(!e[k]) return; var up=e[k]>0; h+='<span class="chip '+(up?'up':'down')+'">'+D.stats[k]+' '+(up?'+':'')+e[k]+'</span>'; });
+  (newSkills||[]).forEach(function(s){ h+='<span class="chip flag">叮！技能點亮：'+esc(s)+'</span>'; });
+  if(r.role) h+='<span class="chip flag">身分：'+esc(r.role)+'</span>';
+  if(r.place) h+='<span class="chip">移居：'+esc(r.place)+'</span>';
+  return h?'<div class="chips">'+h+'</div>':'';
+}
+function choose(k){
+  var ev=role().events[st.i], o=ev.options[k];
+  if(!available(o)){ sfx.lock(); return; }
+  var snap={skills:st.skills.slice(),flags:st.flags.slice(),stats:Object.assign({},st.stats)}, before=JSON.stringify(looksFor(role(),ev.age,st.outfit)), r=resolve(o), e=r.effects||{}, newSkills=[];
+  SK.forEach(function(s){ if(e[s]) st.stats[s]=clamp(st.stats[s]+e[s]); });
+  (r.gain||[]).forEach(function(s){ if(st.skills.indexOf(s)<0){ st.skills.push(s); newSkills.push(s); } });
+  (r.flags||[]).forEach(function(f){ if(st.flags.indexOf(f)<0) st.flags.push(f); });
+  st.placeBefore=st.place; if(r.place) st.place=r.place;
+  if(r.role) st.roles.push(r.role);
+  if(r.look) Object.assign(st.outfit,r.look);
+  st.log.push({year:ev.year,title:ev.title,choice:tpl(o.label),type:o.type,fit:r.fit||0,forced:!!r.forced,k:k,i:st.i,snap:snap});
+  st.faces.push({age:ev.age,look:looksFor(role(),ev.age,st.outfit)});
+  st.pick=k; st.phase='result'; st.lastNew=newSkills; save(); sfx.ding();
+  var sb=document.getElementById('stats'); if(sb) sb.outerHTML=statsHtml(e);
+  showQA(ev); showResult(ev,true,JSON.stringify(looksFor(role(),ev.age,st.outfit))!==before);
+}
+function showResult(ev,animate,changed){
+  var o=ev.options[st.pick], r=resolve(o), af=document.getElementById('after');
+  af.innerHTML='<div class="res fade"><div class="ty">你的選擇：'+TYPE[o.type]+'</div><div id="rtxt"></div>'+(animate?'':chips(r,st.lastNew))+'</div><div id="cardbox"></div>';
+  var rt=document.getElementById('rtxt');
+  function after(){
+    if(animate){ rt.insertAdjacentHTML('afterend',chips(r,st.lastNew)); if(changed){ putFace(ev,null,true); sfx.change(); } }
+    var c=ev.card, cb=document.getElementById('cardbox'), last=st.i>=role().events.length-1;
+    cb.innerHTML='<div class="card"><h3>📜 生涯變化卡・'+ev.year+'</h3><div class="col dn"><b>▼ 衰退行業</b>'+gloss(c.decline)+'</div><div class="col up"><b>▲ 興起行業</b>'+gloss(c.rise)+'</div><div class="col ln"><b>✎ 學習管道</b>'+gloss(c.learn)+'</div>'+(c.note?'<div class="nt">'+gloss(c.note)+'</div>':'')+'</div>'+
+      '<button class="btn" id="next">'+(last?'觀看大結局 ▶':'下一集 ▶')+'</button>';
+    if(animate){ sfx.card(); setTimeout(function(){ cb.scrollIntoView({behavior:'smooth',block:'start'}); },150); }
+    document.getElementById('next').onclick=next;
+  }
+  if(animate){ setTimeout(function(){ af.scrollIntoView({behavior:'smooth',block:'center'}); },60); typeInto(rt,[tpl(r.result)],after); af.onclick=function(){ if(typing) typing.skip(); }; }
+  else { rt.innerHTML='<p style="margin:0">'+gloss(tpl(r.result))+'</p>'; after(); }
+}
+function next(){ sfx.ding(); if(st.i<role().events.length-1){ st.i++; st.pick=null; st.phase='scene'; } else st.phase='end'; save(); render(); }
+
+/* ================= ending ================= */
+function computeEnding(){
+  var c=[0,0,0], fit=0, badShift=0, forced=0, s=st.stats;
+  st.log.forEach(function(l){ c[l.type]++; fit+=l.fit; if(l.type===2&&l.fit<0) badShift++; if(l.forced) forced++; });
+  var st0=role().start, dW=s.wealth-st0.wealth, dF=s.fame-st0.fame, type;
+  if(badShift>=1 && (dW<=-2 || s.family<=3 || (fit<3 && dW<=-1))) type='轉型受挫';
+  else if(forced>=2 && dW<=1) type='浪潮所迫';
+  else if(c[2]>=3 && fit>=2 && (dW>=3||dF>=3||s.wealth>=8||s.fame>=8)) type='順勢而起';
+  else if(c[0]>=4 && fit>=0 && s.family>=st0.family) type='堅守而安穩';
+  else if(c[0]>=4) type='堅守而落寞';
+  else type='穩健過渡';
+  var mx=Math.max.apply(null,c), tops=[0,1,2].filter(function(t){ return c[t]===mx; });
+  return {type:type, text:D.endings[type], cnt:c, fit:fit, tendency: tops.length===1?TYPE[tops[0]]:'混合'};
+}
+function recordText(R){
+  var r=role(), W=lifeSwot(), L=['【'+D.meta.title+'】', (st.name||st.seat)?'姓名：'+(st.name||'')+'　座號：'+(st.seat||''):'', '身分：'+r.name, '結局：'+R.type+'｜最終職業：'+st.roles[st.roles.length-1],
+    '職業軌跡：'+st.roles.join(' → '), '技能：'+st.skills.join('、'), '數值：'+SK.map(function(k){ return D.stats[k]+' '+st.stats[k]; }).join('／'),
+    '選擇：堅守 '+R.cnt[0]+'、觀望 '+R.cnt[1]+'、轉型 '+R.cnt[2], 'SWOT｜S：'+W.S+' W：'+W.W+' O：'+W.O+' T：'+W.T, '— 決定紀錄 —'];
+  st.log.forEach(function(l,i){ L.push((i+1)+'. '+l.year+' '+l.title+'：'+l.choice+'（'+TYPE[l.type]+'）'); });
+  return L.filter(Boolean).join('\n');
+}
+function timeline(){ var seen={}; st.faces.forEach(function(f){ seen[ageKey(f.age)]=f; }); return [['kid','少年'],['young','青年'],['mid','中年'],['old','晚年']].filter(function(k){ return seen[k[0]]; }).map(function(k){ return {label:k[1]+'・'+seen[k[0]].age+'歲', look:seen[k[0]].look}; }); }
+function withSnap(snap,fn){ var a=st.skills,b=st.flags,c=st.stats; st.skills=snap.skills; st.flags=snap.flags; st.stats=snap.stats; try{ return fn(); } finally{ st.skills=a; st.flags=b; st.stats=c; } }
+function sumE(e){ var n=0; for(var k in (e||{})) n+=e[k]; return n; }
+function evalOpts(l){ var ev=role().events[l.i]; return withSnap(l.snap||{skills:st.skills,flags:st.flags,stats:st.stats},function(){
+  return ev.options.map(function(o,j){ var ok=available(o), r=ok?resolve(o):resolve(o); return {o:o,j:j,locked:!ok,r:r,net:sumE(r.effects),fit:r.fit||0}; }); }); }
+function effText(e){ var a=[]; SK.forEach(function(k){ if(e&&e[k]) a.push(D.stats[k]+(e[k]>0?'+':'')+e[k]); }); return a.join('、'); }
+function analyze(l,ops){
+  var me=ops[l.k], out=[];
+  if(me.fit>0) out.push('這一步順著時代的方向走，時機抓得好。');
+  else if(me.fit<0) out.push('從後來的歷史看，這一步時機不太好。');
+  var better=ops.filter(function(x){ return x.j!==l.k && !x.locked && x.fit>me.fit; });
+  if(better.length) out.push('「'+tpl(better[0].o.label)+'」比較符合後來的發展。');
+  var lockedGood=ops.filter(function(x){ return x.locked && x.fit>0; });
+  if(lockedGood.length) out.push('可惜你當時還沒點亮「'+lockedGood[0].o.requires.join('」或「')+'」，「'+tpl(lockedGood[0].o.label)+'」這條路沒開。');
+  var neg=[]; SK.forEach(function(k){ if(me.r.effects&&me.r.effects[k]<0) neg.push(D.stats[k]); });
+  if(neg.length) out.push('你付出的代價是「'+neg.join('、')+'」。');
+  if(!out.length){ var best=null,bv=0; SK.forEach(function(k){ var v=(me.r.effects||{})[k]||0; if(v>bv){ bv=v; best=k; } });
+    out.push('三個選項各有得失，沒有明顯的對錯。'+(best?'你這一步最優先顧到的是「'+D.stats[best]+'」。':'你選了一條比較平穩的路。')); }
+  return out.join('');
+}
+function lifeSwot(){
+  var s=st.stats, hi=SK.slice().sort(function(a,b){ return s[b]-s[a]; }), lo=hi.slice().reverse(), got=[], miss=[], hit=[], lockN={};
+  st.log.forEach(function(l){ var ops=evalOpts(l), me=ops[l.k], ev=role().events[l.i], name='第'+(l.i+1)+'集「'+ev.title+'」';
+    if(me.fit>0) got.push(name);
+    if(me.fit<0||l.forced) hit.push(name);
+    if(me.fit<=0 && ops.some(function(x){ return x.j!==l.k && x.fit>0; })) miss.push(name);
+    ops.forEach(function(x){ if(x.locked) (x.o.requires||[]).forEach(function(q){ lockN[q]=(lockN[q]||0)+1; }); }); });
+  var lk=Object.keys(lockN).sort(function(a,b){ return lockN[b]-lockN[a]; });
+  return {S:'最強數值：'+D.stats[hi[0]]+' '+s[hi[0]]+'。點亮的技能：'+(st.skills.join('、')||'無')+'。',
+    W:'最弱數值：'+D.stats[lo[0]]+' '+s[lo[0]]+'。'+(lk.length?'缺少「'+lk[0]+'」，擋住了 '+lockN[lk[0]]+' 次機會。':'沒有被技能擋住的路。'),
+    O:got.length?'你抓住了：'+got.slice(0,3).join('、')+'。':'這一世，你沒有特別抓住時代給的機會。',
+    T:(hit.length?'你踩到的坑：'+hit.slice(0,2).join('、')+'。':'')+(miss.length?'錯過的機會：'+miss.slice(0,2).join('、')+'。':(hit.length?'':'你避開了大部分的風險。'))};
+}
+function logHtml(){
+  return st.log.map(function(l,n){ var ev=role().events[l.i], ops=evalOpts(l);
+    var h='<details class="lg"><summary><span class="yr2">'+l.year+'</span>'+esc(ev.ep||ev.title)+'<span class="more2">▼</span><br><span class="small">你選了：</span>'+esc(l.choice)+' <span class="tg">'+TYPE[l.type]+'</span></summary>';
+    ops.forEach(function(x){ var mine=x.j===l.k;
+      h+='<div class="alt'+(mine?' mine':'')+'"><div class="hd"><span class="tg">'+TYPE[x.o.type]+'</span> '+esc(tpl(x.o.label))+(mine?'<span class="badge">你的選擇</span>':'')+
+        (!x.locked&&x.fit>0?'<span class="fit g">順應時代</span>':'')+(!x.locked&&x.fit<0?'<span class="fit b">時機不佳</span>':'')+'</div>';
+      if(x.locked) h+='<div class="small">🔒 當時鎖住：'+esc(x.o.lockedHint||('需要技能：'+x.o.requires.join('或')))+'</div>';
+      else h+='<div>'+gloss(tpl(x.r.result))+'</div><div class="small">數值：'+(effText(x.r.effects)||'沒有變化')+'</div>';
+      h+='</div>'; });
+    h+='<div class="ana"><b>系統分析：</b>'+esc(analyze(l,ops))+'</div>'+(ev.review?'<div class="rev">📜 歷史講評：'+gloss(ev.review)+'</div>':'')+'</details>';
+    return h; }).join('');
+}
+function renderEnd(){
+  if(sceneLoop) cancelAnimationFrame(sceneLoop); setTrack('calm');
+  var r=role(), R=computeEnding(), job=st.roles[st.roles.length-1], W=lifeSwot();
+  var h='<div class="endhd fade"><div class="kick">大結局・這一世的生涯回顧</div><h1>'+esc(R.type)+'</h1><div class="job">'+esc(r.name)+' → '+esc(job)+'</div><div class="small">'+(st.name?esc(st.name)+(st.seat?'（'+esc(st.seat)+'）':'')+'｜':'')+esc(r.born)+'，晚年在'+esc(st.place)+'</div></div>'+
+    '<div class="box"><h3>人生軌跡</h3><div class="tl" id="tl"></div><p style="margin:6px 0 0">'+esc(R.text)+'</p></div>'+
+    '<div class="box"><h3>這一世的 SWOT</h3><div class="swot"><div class="s"><b>S 優勢</b>'+esc(W.S)+'</div><div class="w"><b>W 劣勢</b>'+esc(W.W)+'</div><div class="o"><b>O 機會</b>'+esc(W.O)+'</div><div class="t"><b>T 威脅</b>'+esc(W.T)+'</div></div></div>'+
+    '<div class="box"><h3>技能樹</h3>'+treeHtml()+'<h3 style="margin-top:10px">職業軌跡</h3><div class="chips">'+st.roles.map(function(x,i){ return (i?'<span class="arr">→</span>':'')+'<span class="chip flag">'+esc(x)+'</span>'; }).join('')+'</div>'+
+    '<h3 style="margin-top:10px">最終數值</h3>'+statsHtml()+'<div class="chips"><span class="chip">堅守 '+R.cnt[0]+'</span><span class="chip">觀望 '+R.cnt[1]+'</span><span class="chip">轉型 '+R.cnt[2]+'</span></div></div>'+
+    '<div class="box"><h3>決定紀錄・點開看「如果當初選別的」</h3>'+logHtml()+'</div>'+
+    '<div class="box"><h3>和你同身分的真實人物</h3>'+r.real.map(function(p){ return '<div class="real"><b>'+esc(p.name)+'</b><span class="yrs">'+esc(p.years)+'</span><div>'+esc(p.text)+'</div></div>'; }).join('')+'</div>'+
+    '<div class="box"><h3>如果重生到今天的 AI 時代</h3><p>'+esc(r.ai)+'</p></div>'+
+    '<div class="box"><h3>帶去學習單想一想</h3><ol style="margin:0;padding-left:1.3em">'+D.reflect.map(function(q){ return '<li>'+esc(q)+'</li>'; }).join('')+'</ol></div>'+
+    '<button class="btn" id="img">存成圖片</button><div id="imgbox"></div>'+
+    '<button class="btn alt" id="copy">複製決定紀錄</button><textarea class="cb hidden" id="cb" readonly></textarea>'+
+    '<button class="btn alt" id="again">再重生一次（重新抽身分）</button>';
+  app.innerHTML=h;
+  var tl=document.getElementById('tl'); timeline().forEach(function(f){ var d=document.createElement('div'); d.appendChild(portrait(f.look)); d.appendChild(document.createTextNode(f.label)); tl.appendChild(d); });
+  var txt=recordText(R);
+  document.getElementById('copy').onclick=function(){ var cb=document.getElementById('cb'), b=this; function fb(){ cb.value=txt; cb.classList.remove('hidden'); cb.focus(); cb.select(); b.textContent='已選取文字，請長按或按 Ctrl+C 複製'; }
+    try{ navigator.clipboard.writeText(txt).then(function(){ b.textContent='已複製！'; },fb); }catch(e){ fb(); } sfx.ding(); };
+  document.getElementById('img').onclick=function(){ saveImage(R,this); };
+  document.getElementById('again').onclick=function(){ var nm=st.name, se=st.seat; st=fresh(); st.name=nm; st.seat=se; st.phase='draw'; save(); render(); };
+  sfx.card(); window.scrollTo(0,0);
+}
+function wrap(g,text,x,y,w,lh){ var line=''; for(var ch of text){ if(g.measureText(line+ch).width>w){ g.fillText(line,x,y); y+=lh; line=ch; } else line+=ch; } if(line) g.fillText(line,x,y); return y+lh; }
+async function saveImage(R,btn){
+  var cv=renderCardCanvas(R), url=cv.toDataURL('image/png'), box=document.getElementById('imgbox');
+  var fname='生涯回顧卡_'+(st.name||role().short)+'.png';
+  try{
+    var dl=window.claude&&await Promise.race([window.claude.use('downloads'),new Promise(function(r){ setTimeout(function(){ r(null); },1500); })]);
+    if(dl){ var blob=await (await fetch(url)).blob(); await dl.save({filename:fname,data:blob}); btn.textContent='已下載圖片 ✓'; return; }
+  }catch(e){}
+  box.innerHTML='<p class="small" style="margin:8px 0 0">手機請長按圖片儲存；電腦請按右鍵「另存圖片」。</p><img class="shot" alt="生涯回顧卡" src="'+url+'">';
+  btn.textContent='圖片已產生 ↓';
+}
+function renderCardCanvas(R){
+  var r=role(), W=720, logs=st.log, H=900+logs.length*30, cv=document.createElement('canvas'), g=cv.getContext('2d');
+  cv.width=W; cv.height=H; g.imageSmoothingEnabled=false;
+  g.fillStyle='#1d1a26'; g.fillRect(0,0,W,H); g.fillStyle='#0e0c14'; g.fillRect(20,20,W-40,170);
+  g.textAlign='center'; g.fillStyle='#a99f8c'; g.font='16px sans-serif'; g.fillText('生涯回顧卡｜'+D.meta.title,W/2,56);
+  g.fillStyle='#e0b04a'; g.font='bold 44px sans-serif'; g.fillText(R.type,W/2,112);
+  g.fillStyle='#f3e9d2'; g.font='bold 22px sans-serif'; g.fillText(r.name+' → '+st.roles[st.roles.length-1],W/2,148);
+  g.fillStyle='#a99f8c'; g.font='16px sans-serif'; g.fillText((st.name?st.name+(st.seat?'（'+st.seat+'）':'')+'｜':'')+r.born,W/2,176);
+  var tls=timeline(), x0=W/2-(tls.length*150-30)/2;
+  tls.forEach(function(f,i){ g.drawImage(portrait(f.look),x0+i*150,210,120,150); g.fillStyle='#a99f8c'; g.font='15px sans-serif'; g.fillText(f.label,x0+i*150+60,384); });
+  g.textAlign='left'; var y=424;
+  g.fillStyle='#f3e9d2'; g.font='17px sans-serif'; y=wrap(g,R.text,40,y,W-80,26)+16;
+  g.fillStyle='#e0b04a'; g.font='bold 18px sans-serif'; g.fillText('職業軌跡',40,y); y+=28; g.fillStyle='#f3e9d2'; g.font='16px sans-serif'; y=wrap(g,st.roles.join(' → '),40,y,W-80,24)+8;
+  g.fillStyle='#e0b04a'; g.font='bold 18px sans-serif'; g.fillText('學到的技能',40,y); y+=28; g.fillStyle='#f3e9d2'; g.font='16px sans-serif'; y=wrap(g,st.skills.join('、'),40,y,W-80,24)+8;
+  g.fillStyle='#e0b04a'; g.font='bold 18px sans-serif'; g.fillText('最終數值',40,y); y+=14;
+  SK.forEach(function(k,i){ var bx=40+(i%2)*330, by=y+Math.floor(i/2)*30; g.fillStyle='#f3e9d2'; g.font='16px sans-serif'; g.fillText(D.stats[k]+' '+st.stats[k],bx,by+16);
+    for(var c=0;c<10;c++){ g.fillStyle=c<st.stats[k]?({wealth:'#e3b347',family:'#6fb59c',fame:'#c8463a',adapt:'#6b93c4'})[k]:'#3a3348'; g.fillRect(bx+90+c*20,by+4,17,12); } });
+  y+=86; g.fillStyle='#e0b04a'; g.font='bold 18px sans-serif'; g.fillText('決定紀錄（堅守 '+R.cnt[0]+'・觀望 '+R.cnt[1]+'・轉型 '+R.cnt[2]+'）',40,y); y+=32;
+  g.font='15px sans-serif'; logs.forEach(function(l){ g.fillStyle='#e0b04a'; g.fillText(String(l.year),40,y); g.fillStyle='#f3e9d2'; var t=l.title+'：'+l.choice; if(t.length>30) t=t.slice(0,29)+'…'; g.fillText(t,96,y); g.fillStyle='#a99f8c'; g.fillText(TYPE[l.type],W-80,y); y+=30; });
+  var out=document.createElement('canvas'); out.width=W; out.height=y+16; out.getContext('2d').drawImage(cv,0,0); return out;
+}
+
+function render(){
+  if(typing) typing.cancel();
+  if(st.phase==='intro') renderIntro();
+  else if(st.phase==='draw') renderDraw();
+  else if(st.phase==='drawn'){ app.innerHTML=''; showRole(role()); }
+  else if(st.phase==='end') renderEnd();
+  else renderEvent();
+}
+st=fresh(); render();
+window.__g={D:D, get st(){ return st; }, set:function(v){ st=v; }, begin:begin, choose:choose, next:next, computeEnding:computeEnding, skip:function(){ if(typing) typing.skip(); }, render:render, fresh:fresh};
+})();
+</script>
+</body>
+</html>

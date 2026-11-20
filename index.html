@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>重生之我在晚清求生：點滿 SWOT 技能樹的逆襲之路</title>
+<meta name="description" content="國中社會 × 生涯規劃教學遊戲。重生回到晚清，抽一種身分、闖過 8 集歷史變局，看見每個選擇的代價與沒選的那條路。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="重生之我在晚清求生：點滿 SWOT 技能樹的逆襲之路">
+<meta property="og:description" content="叮！你重生到了晚清。抽一種身分、闖過 8 集變局，你會走出哪一種人生？">
+<meta property="og:url" content="https://rjiacnx-666.github.io/wanqing/">
+<meta property="og:image" content="https://rjiacnx-666.github.io/wanqing/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#B83A2E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#F7F0E4;--paper:#FFFBF4;--line:#E3D5BE;--ink:#2A1F16;--body:#5A4636;--muted:#6F604B;--red:#B83A2E;--redD:#8E2A20;--gold:#E9B949;--dark:#1C140E}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--body);font-family:"Noto Sans TC","Noto Sans CJK TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;font-size:17px;line-height:1.75;-webkit-text-size-adjust:100%}
+a{color:var(--red)}
+.serif{font-family:"Noto Serif TC","Noto Serif CJK TC","Songti TC","PMingLiU",serif}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+img.px{image-rendering:pixelated;image-rendering:crisp-edges}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:10;background:rgba(247,240,228,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;color:var(--ink);text-decoration:none;font-size:17px;white-space:nowrap}
+.brand img{width:30px;height:30px}
+.nav{display:flex;gap:18px;margin-left:auto;font-size:15px}
+.nav a{color:var(--body);text-decoration:none;font-weight:500}
+.nav a:hover{color:var(--red)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:12px 26px;font:inherit;font-weight:700;font-size:17px;text-decoration:none;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
+.btn.primary{background:var(--red);color:#FFF8EC;box-shadow:0 4px 0 var(--redD)}
+.btn.primary:hover{transform:translateY(-1px);box-shadow:0 5px 0 var(--redD)}
+.btn.primary:active{transform:translateY(3px);box-shadow:0 1px 0 var(--redD)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--bg)}
+.btn.sm{padding:8px 18px;font-size:15px;box-shadow:0 3px 0 var(--redD)}
+
+/* hero */
+.hero{padding:36px 0 20px}
+.cover{display:block;width:100%;height:auto;border-radius:18px;box-shadow:0 18px 40px -18px rgba(42,31,22,.55);border:3px solid var(--ink)}
+.kick{display:inline-block;margin:28px 0 6px;font-size:14px;font-weight:700;letter-spacing:.18em;color:var(--red)}
+h1{margin:0;color:var(--ink);font-size:clamp(32px,5vw,52px);line-height:1.2;font-weight:900}
+.lead{font-size:clamp(17px,2vw,20px);max-width:720px;margin:14px 0 24px}
+.ctas{display:flex;gap:14px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:34px 0 0}
+.stat{background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:14px 10px;text-align:center}
+.stat b{display:block;font-size:30px;line-height:1.1;color:var(--red)}
+.stat span{font-size:14px;color:var(--muted);font-weight:500}
+
+section{padding:64px 0 8px}
+.eyebrow{font-size:14px;font-weight:700;letter-spacing:.18em;color:var(--red);margin:0 0 4px}
+h2{margin:0 0 8px;color:var(--ink);font-size:clamp(26px,3.4vw,36px);line-height:1.25;font-weight:900}
+.sec-lead{margin:0 0 26px;max-width:720px}
+
+/* roles */
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.role{background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:18px;display:flex;gap:14px;align-items:center}
+.role img{width:84px;height:105px;flex:none;background:linear-gradient(180deg,#2A2536,#1D1A26);border-radius:10px;padding:4px 6px 0;border:2px solid var(--ink)}
+.role h3{margin:0;font-size:19px;color:var(--ink);line-height:1.35}
+.role p{margin:4px 0 0;font-size:14.5px;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-size:12.5px;font-weight:700;padding:2px 10px;border-radius:999px;background:#F1E4CC;color:var(--ink)}
+.chip.none{background:transparent;border:1.5px dashed #C9B898;color:var(--muted)}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.step img{display:block;width:100%;height:auto}
+.step h3{margin:12px 0 2px;font-size:18px;color:var(--ink);display:flex;gap:8px;align-items:baseline}
+.step h3 i{font-style:normal;color:var(--red);font-size:22px;font-weight:900}
+.step p{margin:0;font-size:15px;line-height:1.6}
+
+/* teacher */
+.teach{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card{background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:22px 24px}
+.card h3{margin:0 0 10px;font-size:20px;color:var(--ink)}
+.card ul{margin:0;padding-left:1.2em}
+.card li{margin:4px 0}
+.code{display:inline-block;font-weight:900;font-size:13px;background:var(--gold);color:var(--ink);border-radius:6px;padding:1px 8px;margin-right:6px}
+.card.wide{grid-column:1 / -1;display:flex;gap:18px;align-items:flex-start;border-color:#E8C9C3;background:#FFF6F2}
+.card.wide .ic{flex:none;width:40px;height:40px;border-radius:50%;background:var(--red);color:#FFF8EC;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:22px}
+
+.final{margin:64px 0 0;background:var(--dark);border-radius:22px;padding:40px 28px;text-align:center;color:#E9DCC4;position:relative;overflow:hidden}
+.final h2{color:var(--gold)}
+.final p{margin:6px 0 22px}
+.cast{display:flex;justify-content:center;gap:clamp(4px,1.5vw,18px);margin-bottom:18px;flex-wrap:nowrap}
+.cast img{width:clamp(44px,8vw,80px);height:auto}
+
+footer{padding:36px 0 48px;font-size:14px;color:var(--muted);text-align:center}
+footer p{margin:4px 0}
+
+@media (max-width:860px){
+  .nav{display:none}
+  .roles{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .teach{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .roles{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .brand span{display:none}
+  .top .btn.sm{margin-left:auto}
+}
+@media (prefers-reduced-motion:no-preference){
+  .rise{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+  .rise.in{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand serif" href="#"><img class="px" src="assets/favicon-32.png" alt=""><span>重生之我在晚清求生</span></a>
+    <nav class="nav"><a href="#roles">角色</a><a href="#how">怎麼玩</a><a href="#teacher">給老師</a></nav>
+    <a class="btn primary sm" href="play.html">開始遊戲 ▶</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <img class="cover" src="assets/cover.jpg" width="1920" height="1080" alt="重生之我在晚清求生：點滿 SWOT 技能樹的逆襲之路，六位像素角色站在晚清港口前">
+    <p class="kick">國中社會 × 生涯規劃｜教學遊戲</p>
+    <h1 class="serif">叮！你重生到了晚清。</h1>
+    <p class="lead">你只是個普通的國中生，一覺醒來卻回到 19 世紀的中國。抽一種身分、闖過 8 集歷史變局，每一次選擇，都會改寫你這一世的命運。</p>
+    <div class="ctas">
+      <a class="btn primary" href="play.html">開始重生 ▶</a>
+      <a class="btn ghost" href="#teacher">給老師的說明</a>
+    </div>
+    <div class="stats">
+      <div class="stat"><b class="serif">6</b><span>種重生身分</span></div>
+      <div class="stat"><b class="serif">8</b><span>集歷史事件</span></div>
+      <div class="stat"><b class="serif">6</b><span>種人生結局</span></div>
+      <div class="stat"><b class="serif">10</b><span>分鐘玩一輪</span></div>
+    </div>
+  </div>
+
+  <section id="roles">
+    <p class="eyebrow">ROLES</p>
+    <h2 class="serif">這一世，你會是誰？</h2>
+    <p class="sec-lead">身分是系統隨機抽的，就像我們沒辦法選自己生在哪個時代。起跑點不一樣，能走的路也不一樣。</p>
+    <div class="roles">
+      <div class="role rise"><img class="px" src="assets/sp_gz.png" width="320" height="400" alt="廣州行商之子"><div><h3>廣州行商之子</h3><p>1826 年生於廣州十三行商人家庭，開局家財萬貫。</p><div class="chips"><span class="chip">識字</span><span class="chip">商業</span></div></div></div>
+      <div class="role rise"><img class="px" src="assets/sp_scholar.png" width="320" height="400" alt="科舉士子"><div><h3>科舉士子</h3><p>1830 年生於蘇州讀書人家，全家都盼你考取功名。</p><div class="chips"><span class="chip">識字</span></div></div></div>
+      <div class="role rise"><img class="px" src="assets/sp_coolie.png" width="320" height="400" alt="上海苦力阿福"><div><h3>上海苦力「阿福」</h3><p>1835 年生於江北佃農家庭，唯一的本錢是年輕的身體。</p><div class="chips"><span class="chip none">沒有起始技能</span></div></div></div>
+      <div class="role rise"><img class="px" src="assets/sp_farm.png" width="320" height="400" alt="江南農家女子秀英"><div><h3>江南農家女子「秀英」</h3><p>1838 年生於松江棉農家，女性能走的路很少，那就自己開一條。</p><div class="chips"><span class="chip">紡織</span></div></div></div>
+      <div class="role rise"><img class="px" src="assets/sp_clerk.png" width="320" height="400" alt="洋務文書周明遠"><div><h3>洋務文書「周明遠」</h3><p>1838 年生於湖南寒門書生家，寫得一手好字，卻沒錢考試。</p><div class="chips"><span class="chip">識字</span></div></div></div>
+      <div class="role rise"><img class="px" src="assets/sp_tea.png" width="320" height="400" alt="臺灣茶工水生"><div><h3>臺灣茶工「水生」</h3><p>1850 年生於艋舺移民家庭，大批洋船正在靠近淡水河口。</p><div class="chips"><span class="chip none">沒有起始技能</span></div></div></div>
+    </div>
+  </section>
+
+  <section id="how">
+    <p class="eyebrow">HOW TO PLAY</p>
+    <h2 class="serif">怎麼玩</h2>
+    <p class="sec-lead">全劇 8 集，每集三選一，沒有標準答案。畫面上有虛線的詞，點一下就會跳出白話解釋。</p>
+    <div class="steps">
+      <div class="step rise"><img src="assets/shot_p9_draw.png" width="420" height="630" alt="抽身分畫面：六種身分輪流亮起"><h3><i>1</i>重生抽身分</h3><p>系統隨機分配，看清楚你的起始數值和開局 SWOT。</p></div>
+      <div class="step rise"><img src="assets/shot_p10_event.png" width="420" height="630" alt="第 1 集畫面：禁煙風暴的劇情與數值"><h3><i>2</i>每集三選一</h3><p>每一集都是課本裡的真實事件，選項順序每次都不同。</p></div>
+      <div class="step rise"><img src="assets/shot_p10_result.png" width="420" height="630" alt="選擇後的結果、數值變化與生涯變化卡"><h3><i>3</i>看見代價</h3><p>財力、家人、名望、適應力常常一升一降；技能沒點亮，有些路就走不了。</p></div>
+      <div class="step rise"><img src="assets/shot_p11_review.png" width="420" height="630" alt="結局回顧：展開看其他選項的結果與分析"><h3><i>4</i>回顧沒選的路</h3><p>結局整理出這一世的 SWOT，還能展開看「如果當初選別的」。</p></div>
+    </div>
+  </section>
+
+  <section id="teacher">
+    <p class="eyebrow">FOR TEACHERS</p>
+    <h2 class="serif">給老師的說明</h2>
+    <p class="sec-lead">本遊戲是教案「發展活動」的一部分，玩完後接到第二節的「我的 AI 時代 SWOT」學習單。</p>
+    <div class="teach">
+      <div class="card rise">
+        <h3>課程對應</h3>
+        <ul>
+          <li>國中社會 第三篇 第 5 章〈西力衝擊下的東亞世界〉</li>
+          <li><span class="code">涯 J9</span>社會變遷與工作／教育環境</li>
+          <li><span class="code">涯 J11</span>分析影響生涯決定的因素</li>
+          <li><span class="code">涯 J12</span>發展及評估生涯決定的策略</li>
+        </ul>
+      </div>
+      <div class="card rise">
+        <h3>課堂怎麼用</h3>
+        <ul>
+          <li>建議留 20 分鐘；一輪約 10 分鐘，玩得快的學生可以再抽一個身分。</li>
+          <li>一人一台平板或電腦，備耳機（遊戲內也可以關音樂）。</li>
+          <li>玩完按「存成圖片」，帶去小組分享與學習單。</li>
+          <li>全遊戲有 102 個名詞解釋，學生遇到難詞可以自己查。</li>
+        </ul>
+      </div>
+      <div class="card rise">
+        <h3>開始前，跟學生說四件事</h3>
+        <ul>
+          <li>你重生了：隨機抽一種晚清身分。</li>
+          <li>全劇 8 集，每集三選一，沒有標準答案。</li>
+          <li>留意四項數值；有些選項要先點亮技能。</li>
+          <li>玩完存圖，等一下小組要分享。</li>
+        </ul>
+      </div>
+      <div class="card rise">
+        <h3>六種結局</h3>
+        <p style="margin:0">順勢而起、穩健過渡、堅守而安穩、堅守而落寞、浪潮所迫、轉型受挫。結局和自己的起點比，所以開局窮的角色不會注定輸。</p>
+      </div>
+      <div class="card wide rise">
+        <div class="ic">!</div>
+        <div><h3 style="margin-bottom:4px">提醒學生</h3><p style="margin:0">事件取材自課本與史實，重生情節與主角是虛構的；數值是幫助思考的工具，不是替人生打分。遊戲進度只存在這台裝置的瀏覽器裡，換裝置要重新玩。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="final rise">
+    <div class="cast">
+      <img class="px" src="assets/sp_coolie.png" alt="上海苦力阿福"><img class="px" src="assets/sp_farm.png" alt="農家女子秀英"><img class="px" src="assets/sp_scholar.png" alt="科舉士子"><img class="px" src="assets/sp_gz.png" alt="廣州行商之子" style="width:clamp(56px,10vw,100px)"><img class="px" src="assets/sp_tea.png" alt="臺灣茶工水生"><img class="px" src="assets/sp_clerk.png" alt="洋務文書周明遠">
+    </div>
+    <h2 class="serif">變的是科技，不變的是選擇題。</h2>
+    <p>19 世紀的人面對輪船與洋紗，今天的我們面對 AI。</p>
+    <a class="btn primary" href="play.html">開始重生 ▶</a>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>職業教育與訓練暨生涯規劃｜第三組</p>
+    <p>重生情節與主角皆為虛構；事件背景依據課本第 5 章〈西力衝擊下的東亞世界〉與相關史實。</p>
+    <p>本遊戲以 Claude 協助製作。</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var els=document.querySelectorAll('.rise');
+  if(!('IntersectionObserver' in window)){ els.forEach(function(e){e.classList.add('in');}); return; }
+  var io=new IntersectionObserver(function(es){ es.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }); },{rootMargin:'0px 0px -8% 0px'});
+  els.forEach(function(e){ io.observe(e); });
+})();
+</script>
+</body>
+</html>
